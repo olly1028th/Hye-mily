@@ -55,7 +55,7 @@ export default function PetDisplay() {
             style={{
               width: `${Math.min(
                 (pet.exp /
-                  (config.expThresholds[pet.stage === 'baby' ? 0 : 1] || 1)) *
+                  (config.evolution[pet.stage === 'baby' ? 0 : 1]?.exp || 1)) *
                   100,
                 100
               )}%`,

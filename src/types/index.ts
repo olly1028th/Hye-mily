@@ -32,6 +32,9 @@ export interface PetStats {
   health: number;
 }
 
+/** PetStats의 키 타입 */
+export type StatKey = keyof PetStats;
+
 // ============================================
 // 반려동물 메인 상태
 // ============================================
@@ -54,8 +57,12 @@ export interface Pet {
   age: number;
   /** 현재 성장 경험치 (다음 단계까지) */
   exp: number;
+  /** 총 누적 경험치 (통계용) */
+  totalExp: number;
   /** 마지막 상호작용 시각 (timestamp) */
   lastInteraction: number;
+  /** 마지막 틱 처리 시각 (오프라인 계산용, timestamp) */
+  lastTickAt: number;
   /** 태어난 시각 (timestamp) */
   bornAt: number;
   /** 살아있는지 여부 */
@@ -84,21 +91,68 @@ export interface GameAction {
 // 종별 특성 타입
 // ============================================
 
-/** 종별 고유 특성 */
+/** 성장 단계별 배율 */
+export interface StageMultipliers {
+  /** 스탯 감소 속도 배율 (baby는 빠름, adult는 안정) */
+  decayRate: number;
+  /** 액션 효과 배율 */
+  actionEfficiency: number;
+  /** 경험치 획득 배율 */
+  expRate: number;
+}
+
+/** 진화 조건 */
+export interface EvolutionRequirement {
+  /** 필요 경험치 */
+  exp: number;
+  /** 진화 시 모든 스탯이 이 값 이상이어야 함 */
+  minStats?: Partial<PetStats>;
+  /** 진화 시 최소 나이(틱) */
+  minAge?: number;
+}
+
+/** 종별 액션 보너스 */
+export interface ActionBonus {
+  bonusStat: StatKey;
+  bonusAmount: number;
+}
+
+/** 종별 고유 특성 (확장) */
 export interface SpeciesConfig {
   species: PetSpecies;
   displayName: string;
-  /** 스탯 감소 속도 배율 (1.0 = 기본) */
-  decayRates: PetStats;
-  /** 성장에 필요한 경험치 [baby→teen, teen→adult] */
-  expThresholds: [number, number];
-  /** 종별 특수 설명 */
   description: string;
+  /** 종별 초기 스탯 */
+  initialStats: PetStats;
+  /** 스탯 감소 기본 속도 (틱당) */
+  decayRates: PetStats;
+  /** 성장 단계별 배율 */
+  stageMultipliers: Record<GrowthStage, StageMultipliers>;
+  /** 진화 조건 [baby→teen, teen→adult] */
+  evolution: [EvolutionRequirement, EvolutionRequirement];
+  /** 좋아하는 액션 — 보너스 효과 */
+  favoriteAction: ActionType;
+  /** 싫어하는 액션 — happiness 추가 감소 */
+  dislikedAction: ActionType;
+  /** 종별 고유 액션 보너스 */
+  actionBonuses: Partial<Record<ActionType, ActionBonus>>;
+  /** 취약 스탯 — 위험 시 건강 감소 가중 */
+  vulnerableStat: StatKey;
+  /** 취약 스탯 건강 감소 추가량 */
+  vulnerabilityPenalty: number;
+  /** 오버케어 임계값 (이 이상이면 효과 반감) */
+  overcareThreshold: number;
 }
 
 // ============================================
 // 게임 전체 상태
 // ============================================
+
+/** 이벤트 로그 항목 */
+export interface EventLogEntry {
+  message: string;
+  timestamp: number;
+}
 
 /** 게임 전체 상태 */
 export interface GameState {
@@ -114,6 +168,8 @@ export interface GameState {
   cooldowns: Record<ActionType, number>;
   /** 일시정지 여부 */
   isPaused: boolean;
+  /** 이벤트 로그 (최근 N개) */
+  eventLog: EventLogEntry[];
 }
 
 // ============================================
@@ -129,4 +185,18 @@ export interface GameEvent {
   probability: number;
   /** 특정 종에만 발생하는 이벤트인 경우 */
   speciesOnly?: PetSpecies[];
+  /** 특정 성장 단계에만 발생 */
+  stageOnly?: GrowthStage[];
+}
+
+// ============================================
+// 세이브 데이터 타입
+// ============================================
+
+/** localStorage에 저장되는 세이브 데이터 */
+export interface SaveData {
+  version: number;
+  pet: Pet;
+  startedAt: number;
+  savedAt: number;
 }

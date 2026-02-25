@@ -2,89 +2,58 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
-  border-radius: 20px;
+  padding: 2.5rem 1.5rem 1.5rem;
+  position: relative;
+}
+
+/* ── Cloud decorations ── */
+.pet-clouds {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pet-cloud {
+  position: absolute;
   background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: background 0.3s;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 
-.pet-display.mood-happy { background: #ffeaa7; }
-.pet-display.mood-neutral { background: #dfe6e9; }
-.pet-display.mood-sad { background: #a29bfe; }
-.pet-display.mood-angry { background: #fab1a0; }
-.pet-display.mood-sick { background: #b2bec3; }
+.pet-cloud-1 { top: 20px; left: -40px; width: 160px; height: 96px; opacity: 0.6; }
+.pet-cloud-2 { top: 80px; right: -64px; width: 224px; height: 128px; opacity: 0.4; }
+.pet-cloud-3 { bottom: 40px; left: 50%; transform: translateX(-50%); width: 320px; height: 160px; opacity: 0.5; }
 
-.pet-info-bar {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.pet-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #2d3436;
-}
-
-.pet-species,
-.pet-stage {
-  font-size: 0.85rem;
-  color: #636e72;
-  background: rgba(0, 0, 0, 0.06);
-  padding: 0.2rem 0.6rem;
-  border-radius: 8px;
-}
-
+/* ── Pet sprite area ── */
 .pet-sprite-area {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1rem 0;
+  z-index: 1;
 }
 
-.mood-bubble {
-  font-size: 0.9rem;
-  color: #636e72;
-  background: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
+.pet-glow {
+  position: absolute;
+  inset: -16px;
+  background: rgba(245, 61, 107, 0.05);
+  border-radius: 50%;
+  filter: blur(32px);
 }
-
-/* ============================================
-   이모지 fallback 모드
-   ============================================ */
-
-.pet-sprite {
-  font-size: 6rem;
-  transition: transform 0.3s;
-  animation: bounce 2s ease-in-out infinite;
-}
-.pet-sprite.stage-baby  { font-size: 4rem; }
-.pet-sprite.stage-teen  { font-size: 5.5rem; }
-.pet-sprite.stage-adult { font-size: 7rem; }
-
-/* ============================================
-   실사 이미지 모드
-   ============================================ */
 
 .pet-image-wrapper {
   position: relative;
   border-radius: 50%;
   overflow: hidden;
-  animation: bounce 2s ease-in-out infinite;
+  animation: pet-float 3s ease-in-out infinite;
   transition: all 0.4s ease;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(245, 61, 107, 0.12);
 }
 
-/* 성장 단계별 크기 */
-.pet-image-wrapper.stage-baby  { width: 140px; height: 140px; }
-.pet-image-wrapper.stage-teen  { width: 180px; height: 180px; }
-.pet-image-wrapper.stage-adult { width: 220px; height: 220px; }
+.pet-image-wrapper.stage-baby  { width: 180px; height: 180px; }
+.pet-image-wrapper.stage-teen  { width: 210px; height: 210px; }
+.pet-image-wrapper.stage-adult { width: 224px; height: 224px; }
 
 .pet-image {
   width: 100%;
@@ -94,32 +63,73 @@
   transition: filter 0.4s ease;
 }
 
-/* ── 기분별 이미지 CSS 필터 ──
-   같은 사진으로도 mood가 시각적으로 구분됨 */
+/* ── 이모지 fallback ── */
+.pet-sprite {
+  font-size: 6rem;
+  animation: pet-float 3s ease-in-out infinite;
+}
+.pet-sprite.stage-baby  { font-size: 4.5rem; }
+.pet-sprite.stage-teen  { font-size: 5.5rem; }
+.pet-sprite.stage-adult { font-size: 7rem; }
 
-.mood-filter-happy .pet-image {
-  filter: brightness(1.05) saturate(1.15);
+/* ── Level badge ── */
+.pet-level-badge {
+  position: absolute;
+  bottom: -8px;
+  right: 16px;
+  background: white;
+  padding: 4px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
-.mood-filter-neutral .pet-image {
-  filter: brightness(1.0) saturate(1.0);
+.pet-level-text {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
-.mood-filter-sad .pet-image {
-  filter: brightness(0.85) saturate(0.6);
+/* ── Mood bubble ── */
+.mood-bubble {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: white;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.75rem;
 }
 
-.mood-filter-angry .pet-image {
-  filter: brightness(0.95) saturate(1.3) hue-rotate(-10deg);
+/* ── Pet info ── */
+.pet-info-center {
+  margin-top: 1.5rem;
+  text-align: center;
+  z-index: 1;
 }
 
-.mood-filter-sick .pet-image {
-  filter: brightness(0.7) saturate(0.3) sepia(0.2);
+.pet-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
 }
 
-/* ── 기분별 컬러 오버레이 ──
-   이미지 위에 반투명 색상을 덧씌워 감정 강조 */
+.pet-breed-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
 
+/* ── Mood-based image filters ── */
+.mood-filter-happy .pet-image   { filter: brightness(1.05) saturate(1.15); }
+.mood-filter-neutral .pet-image { filter: brightness(1.0) saturate(1.0); }
+.mood-filter-sad .pet-image     { filter: brightness(0.85) saturate(0.6); }
+.mood-filter-angry .pet-image   { filter: brightness(0.95) saturate(1.3) hue-rotate(-10deg); }
+.mood-filter-sick .pet-image    { filter: brightness(0.7) saturate(0.3) sepia(0.2); }
+
+/* ── Mood overlays ── */
 .mood-overlay {
   position: absolute;
   inset: 0;
@@ -134,40 +144,39 @@
 .mood-overlay-angry  { background: radial-gradient(circle, rgba(214, 48, 49, 0.15) 0%, transparent 70%); }
 .mood-overlay-sick   { background: radial-gradient(circle, rgba(178, 190, 195, 0.3) 0%, transparent 70%); }
 
-/* ── 공통 애니메이션 ── */
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
-}
-
-/* ── EXP 바 ── */
-
+/* ── EXP bar ── */
 .pet-exp-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  max-width: 250px;
+  max-width: 220px;
+  margin-top: 1rem;
+  z-index: 1;
 }
 
 .exp-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #636e72;
+  color: var(--text-muted);
 }
 
 .exp-track {
   flex: 1;
-  height: 8px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
   overflow: hidden;
 }
 
 .exp-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6c5ce7, #a29bfe);
-  border-radius: 4px;
+  background: linear-gradient(90deg, var(--primary), #ff8fab);
+  border-radius: 9999px;
   transition: width 0.3s;
+}
+
+@keyframes pet-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
 }

@@ -4,19 +4,20 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-  font-family: 'Noto Sans KR', sans-serif;
+  background: linear-gradient(135deg, #fff5f7 0%, var(--jelly-yellow) 100%);
 }
 
 .start-title {
   font-size: 2.8rem;
-  color: #e17055;
+  color: var(--primary);
   margin-bottom: 0.3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
 .start-subtitle {
   font-size: 1.1rem;
-  color: #636e72;
+  color: var(--text-secondary);
   margin-bottom: 1.5rem;
 }
 
@@ -43,13 +44,13 @@
 }
 
 .step-dot.active {
-  background: #e17055;
+  background: var(--primary);
   color: white;
   transform: scale(1.15);
 }
 
 .step-dot.done {
-  background: #00b894;
+  background: #059669;
   color: white;
 }
 
@@ -120,7 +121,7 @@
 .species-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  border-color: #e17055;
+  border-color: var(--primary);
 }
 
 .species-emoji {
@@ -165,7 +166,7 @@
 .breed-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  border-color: #e17055;
+  border-color: var(--primary);
 }
 
 .breed-header {
@@ -283,11 +284,11 @@
   outline: none;
   text-align: center;
   transition: border-color 0.2s;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Spline Sans', sans-serif;
 }
 
 .name-input-group input:focus {
-  border-color: #e17055;
+  border-color: var(--primary);
 }
 
 .start-button {
@@ -295,20 +296,20 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: white;
-  background: #e17055;
+  background: var(--primary);
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Spline Sans', sans-serif;
 }
 
 .start-button:hover:not(:disabled) {
-  background: #d63031;
+  background: #e11d48;
   transform: translateY(-2px);
 }
 
 .start-button:disabled {
-  background: #b2bec3;
+  background: var(--text-muted);
   cursor: not-allowed;
 }

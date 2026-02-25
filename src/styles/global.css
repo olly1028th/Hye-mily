@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap');
 
 *,
 *::before,
@@ -8,19 +8,66 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary: #f53d6b;
+  --primary-light: rgba(245, 61, 107, 0.1);
+  --primary-faded: rgba(245, 61, 107, 0.05);
+  --bg-light: #fcf8f9;
+  --bg-dark: #221014;
+  --pastel-yellow: #fff9db;
+  --pastel-mint: #e6fcf5;
+  --pastel-pink: #fff0f6;
+  --jelly-pink: #ff8fab;
+  --jelly-blue: #90dbf4;
+  --jelly-purple: #cfbaf0;
+  --jelly-yellow: #fde4cf;
+  --soft-peach: #ffedeb;
+  --warm-cream: #fff9f2;
+  --text-dark: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --white: #ffffff;
+  --border-light: rgba(241, 245, 249, 0.8);
+  --shadow-soft: 0 10px 25px -5px rgba(245, 61, 107, 0.1);
+  --shadow-puffy: inset 0 -4px 0 rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 9999px;
+}
+
 body {
-  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Spline Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f5f6fa;
-  /* PWA: 스크롤 바운스 방지 */
+  background: var(--bg-light);
+  color: var(--text-dark);
   overscroll-behavior: none;
 }
 
 #root {
-  max-width: 480px;
+  max-width: 430px;
   margin: 0 auto;
   min-height: 100dvh;
+  position: relative;
+}
+
+/* Material Symbols helper */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================
@@ -29,9 +76,8 @@ body {
 
 @media (min-width: 768px) {
   #root {
-    max-width: 480px;
-    /* 태블릿/데스크톱에서 카드처럼 보이도록 */
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    max-width: 430px;
+    box-shadow: 0 0 60px rgba(245, 61, 107, 0.08);
     border-radius: 24px;
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -40,17 +86,13 @@ body {
   }
 
   body {
-    background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+    background: linear-gradient(135deg, #fef2f4 0%, #fde4cf 100%);
   }
 }
 
-/* ============================================
-   반응형: 대형 화면
-   ============================================ */
-
 @media (min-width: 1200px) {
   #root {
-    max-width: 440px;
+    max-width: 430px;
     margin-top: 3rem;
     margin-bottom: 3rem;
   }
@@ -69,3 +111,21 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================
+   공통 유틸리티
+   ============================================ */
+
+.cloud-shape {
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+/* 스크린 전환 애니메이션 */
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 숨김 스크롤바 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

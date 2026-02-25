@@ -1,18 +1,21 @@
 .status-bar {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  gap: 0.75rem;
+  padding: 0 1.5rem;
+  width: 100%;
 }
 
-.stat-bar {
+.stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px -5px rgba(245, 61, 107, 0.1);
   transition: opacity 0.3s;
 }
 
-.stat-bar.danger {
+.stat-card.danger {
   animation: pulse-danger 1s ease-in-out infinite;
 }
 
@@ -24,30 +27,50 @@
 .stat-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.2rem;
+  align-items: flex-end;
+  margin-bottom: 0.6rem;
+}
+
+.stat-icon-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon {
+  font-size: 18px;
 }
 
 .stat-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #2d3436;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
 }
 
 .stat-value {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #636e72;
+  color: var(--text-muted);
 }
 
 .stat-track {
-  height: 10px;
-  background: #f0f0f0;
-  border-radius: 5px;
+  height: 14px;
+  background: var(--border-light);
+  border-radius: 9999px;
   overflow: hidden;
 }
 
 .stat-fill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 9999px;
   transition: width 0.5s ease;
 }

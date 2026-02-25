@@ -15,6 +15,16 @@ function getMoodBubble(mood: string): string {
   }
 }
 
+/** 성장 단계를 레벨로 변환 */
+function stageToLevel(stage: string): number {
+  switch (stage) {
+    case 'baby': return 1;
+    case 'teen': return 5;
+    case 'adult': return 10;
+    default: return 1;
+  }
+}
+
 export default function PetDisplay() {
   const { state } = useGameContext();
   const pet = state.pet;
@@ -24,23 +34,24 @@ export default function PetDisplay() {
   const breedConfig = BREED_CONFIGS[pet.breed];
   const stageLabel = STAGE_LABELS[pet.stage];
 
-  // 실사 이미지 시도 → 없으면 이모지 fallback
   const imageUrl = getPetImageUrl(pet.breed, pet.stage, pet.mood);
   const fallbackEmoji = breedConfig?.emoji ?? '❓';
 
   return (
-    <div className={`pet-display mood-${pet.mood}`}>
-      <div className="pet-info-bar">
-        <span className="pet-name">{pet.name}</span>
-        <span className="pet-species">{breedConfig?.displayName ?? config.displayName}</span>
-        <span className="pet-stage">{stageLabel}</span>
+    <div className="pet-display">
+      {/* Cloud decorations */}
+      <div className="pet-clouds">
+        <div className="pet-cloud pet-cloud-1" />
+        <div className="pet-cloud pet-cloud-2" />
+        <div className="pet-cloud pet-cloud-3" />
       </div>
 
       <div className="pet-sprite-area">
         <div className="mood-bubble">{getMoodBubble(pet.mood)}</div>
 
+        <div className="pet-glow" />
+
         {imageUrl ? (
-          /* ── 실사 이미지 모드 ── */
           <div className={`pet-image-wrapper stage-${pet.stage} mood-filter-${pet.mood}`}>
             <img
               src={imageUrl}
@@ -48,13 +59,20 @@ export default function PetDisplay() {
               className="pet-image"
               draggable={false}
             />
-            {/* 기분별 CSS 오버레이 */}
             <div className={`mood-overlay mood-overlay-${pet.mood}`} />
           </div>
         ) : (
-          /* ── 이모지 fallback ── */
           <div className={`pet-sprite stage-${pet.stage}`}>{fallbackEmoji}</div>
         )}
+
+        <div className="pet-level-badge">
+          <span className="pet-level-text">Level {stageToLevel(pet.stage)}</span>
+        </div>
+      </div>
+
+      <div className="pet-info-center">
+        <div className="pet-name">{pet.name}</div>
+        <div className="pet-breed-label">{breedConfig?.displayName ?? config.displayName}</div>
       </div>
 
       <div className="pet-exp-bar">

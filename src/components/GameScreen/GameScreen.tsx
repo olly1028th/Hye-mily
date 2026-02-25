@@ -16,7 +16,11 @@ import EventLog from '../EventLog/EventLog';
 import EvolutionOverlay from '../EvolutionOverlay/EvolutionOverlay';
 import CatchGame from '../MiniGame/CatchGame';
 import Collection from '../Collection/Collection';
+import StatsScreen from '../StatsScreen/StatsScreen';
+import ShopScreen from '../ShopScreen/ShopScreen';
 import './GameScreen.css';
+
+type TabId = 'home' | 'stats' | 'shop' | 'settings';
 
 /** progress state를 갱신하고 localStorage에도 동기화 */
 function updateAndSave(
@@ -38,6 +42,7 @@ export default function GameScreen() {
   const [showEventLog, setShowEventLog] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>('home');
 
   // 초기 로드 시 첫 펫 카운트 보정
   const [progress, setProgress] = useState<UserProgress>(() => {
@@ -229,34 +234,33 @@ export default function GameScreen() {
         <Collection progress={progress} onClose={() => setShowCollection(false)} />
       )}
 
+      {/* ── Stitch-style Header ── */}
+      <header className="game-header">
+        <div className="game-header-avatar">
+          <span className="material-symbols-outlined" style={{ color: 'var(--primary)', fontSize: '24px' }}>pets</span>
+        </div>
+        <div className="game-header-center">
+          <h1 className="game-header-title">Hye-mily</h1>
+          <div className="game-header-subtitle">
+            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>cloud</span>
+            <span>Cozy Mode</span>
+          </div>
+        </div>
+        <button className="game-header-settings" onClick={handleSoundToggle} title={soundOn ? '소리 끄기' : '소리 켜기'}>
+          <span className="material-symbols-outlined">{soundOn ? 'volume_up' : 'volume_off'}</span>
+        </button>
+      </header>
+
+      {/* ── Top bar icons ── */}
       <div className="top-bar">
-        <button
-          className="icon-button"
-          onClick={openCollectionWithLatest}
-          title="도감 & 업적"
-        >
-          📖
+        <button className="icon-button" onClick={openCollectionWithLatest} title="도감 & 업적">
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>auto_stories</span>
         </button>
-        <button
-          className="icon-button"
-          onClick={() => setShowEventLog(!showEventLog)}
-          title="이벤트 로그"
-        >
-          {showEventLog ? '✕' : '📜'}
+        <button className="icon-button" onClick={() => setShowEventLog(!showEventLog)} title="이벤트 로그">
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>{showEventLog ? 'close' : 'history'}</span>
         </button>
-        <button
-          className="icon-button"
-          onClick={handleSoundToggle}
-          title={soundOn ? '소리 끄기' : '소리 켜기'}
-        >
-          {soundOn ? '🔊' : '🔇'}
-        </button>
-        <button
-          className="icon-button"
-          onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })}
-          title={state.isPaused ? '계속' : '일시정지'}
-        >
-          {state.isPaused ? '▶' : '⏸'}
+        <button className="icon-button" onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })} title={state.isPaused ? '계속' : '일시정지'}>
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>{state.isPaused ? 'play_arrow' : 'pause'}</span>
         </button>
       </div>
 
@@ -267,9 +271,50 @@ export default function GameScreen() {
         />
       )}
 
-      <PetDisplay />
-      <StatusBar />
-      <ActionPanel onActionSound={handleActionSound} onPlayAction={handlePlayAction} />
+      {/* ── Main content (tab-based) ── */}
+      <div className="game-main">
+        {activeTab === 'home' && (
+          <>
+            <PetDisplay />
+            <StatusBar />
+            <ActionPanel onActionSound={handleActionSound} onPlayAction={handlePlayAction} />
+          </>
+        )}
+
+        {activeTab === 'stats' && <StatsScreen />}
+        {activeTab === 'shop' && <ShopScreen />}
+        {activeTab === 'settings' && (
+          <div style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Settings coming soon</p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Bottom Navigation ── */}
+      <nav className="bottom-nav">
+        <div className="bottom-nav-inner">
+          {([
+            { id: 'home' as TabId, icon: 'home', label: 'Home' },
+            { id: 'stats' as TabId, icon: 'bar_chart', label: 'Stats' },
+            { id: 'shop' as TabId, icon: 'shopping_bag', label: 'Shop' },
+            { id: 'settings' as TabId, icon: 'settings', label: 'Settings' },
+          ]).map((tab) => (
+            <button
+              key={tab.id}
+              className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: activeTab === tab.id ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                {tab.icon}
+              </span>
+              <span className="nav-tab-label">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Hye-mily — Pet Tamagotchi Design Preview</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#f53d6b",
+            "background-light": "#fcf8f9",
+            "background-dark": "#221014",
+            "pastel-yellow": "#fff9db",
+            "pastel-mint": "#e6fcf5",
+            "pastel-pink": "#fff0f6",
+            "jelly-pink": "#ff8fab",
+            "jelly-blue": "#90dbf4",
+            "jelly-purple": "#cfbaf0",
+            "jelly-yellow": "#fde4cf",
+            "soft-peach": "#ffedeb",
+            "warm-cream": "#fff9f2",
+          },
+          fontFamily: {
+            display: ["Spline Sans", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "1.5rem",
+            lg: "2rem",
+            xl: "3rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    /* Shared styles */
+    .cloud-shape {
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+    .soft-shadow {
+      box-shadow: 0 10px 25px -5px rgba(245, 61, 107, 0.1);
+    }
+    .puffy-button {
+      box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 4px solid white;
+    }
+    .jelly-shadow {
+      box-shadow: 0 10px 25px -5px rgba(245, 61, 107, 0.2);
+    }
+    .floating-heart {
+      filter: drop-shadow(0 4px 6px rgba(245, 61, 107, 0.3));
+    }
+    .puffy-shadow {
+      box-shadow: 0 8px 30px rgba(245, 61, 107, 0.08);
+    }
+    .inner-glow {
+      box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.8);
+    }
+    /* Screen transitions */
+    .screen {
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+    .screen.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* Hide scrollbar for horizontal lists */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 1 : HOME                                              -->
+  <!-- ============================================================ -->
+  <div id="screen-home" class="screen active flex-col min-h-screen">
+    <!-- Header -->
+    <header class="flex items-center justify-between p-6 pt-8">
+      <div class="flex size-12 shrink-0 items-center justify-center bg-white dark:bg-slate-800 rounded-full soft-shadow">
+        <div
+          class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzf9gM9RX0x6UACIXmNM9nJPp-cPmP8JgUyuImYAzwmsQnPAoqAENIgjZdn9Q0FvIp8EPlpWKaOH-2TKkZJpKA8l6iTEIKjFC9WuJvUebAr54UzPFxnaUflwG_arAURahymTHyl6NgoWpzDkDNv3V35dEPHpCF-A1mmwuOmGR6jHfFBx0SpH55Eb3gdWojR_yJGP7fxb1hoWP2QkOYXOnTowJVMSbr1LOv36QNvpwcQNUG3nQuApSdW4oNCzG7XTao3ww-WvZ1pQ");'
+        ></div>
+      </div>
+      <div class="flex flex-col items-center">
+        <h1 class="text-primary text-2xl font-bold leading-tight tracking-tight">Hye-mily</h1>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-primary text-xs shrink-0" style="font-variation-settings: 'FILL' 1">cloud</span>
+          <p class="text-primary/70 text-xs font-semibold uppercase tracking-widest">Cozy Mode</p>
+        </div>
+      </div>
+      <button class="flex size-12 items-center justify-center rounded-full bg-white dark:bg-slate-800 soft-shadow text-slate-600 dark:text-slate-300">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col px-6 relative">
+      <!-- Cloud decorations -->
+      <div class="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 -left-10 w-40 h-24 bg-white dark:bg-slate-800/40 cloud-shape opacity-60"></div>
+        <div class="absolute top-40 -right-16 w-56 h-32 bg-white dark:bg-slate-800/40 cloud-shape opacity-40"></div>
+        <div class="absolute bottom-40 left-1/2 -translate-x-1/2 w-80 h-40 bg-white dark:bg-slate-800/60 cloud-shape"></div>
+      </div>
+
+      <!-- Pet display -->
+      <div class="flex flex-col items-center justify-center pt-10 pb-12">
+        <div class="relative">
+          <div class="absolute -inset-4 bg-primary/5 rounded-full blur-2xl"></div>
+          <div
+            class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-56 h-56 relative z-10"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBvgtpqB7sDxo07v6UjPekKGGJuzzZ6Hq3eBbj05uw24CxOuKQWiPr9GJQhWdsUyfa8rXj4Z_l1-yyEnQxlAWMGR_XyELJRzKXJuFxnb06l1_veaV5mk0mMuJDQoryOxUjZbEampdgkWkGM9Htem-5TCPGgUoaPj8ModYUL0ljU4G0L3NBbXJPvXH8uCwG-UTbYW8gN2kYZCMh8smhusBmLoKNlP3Ikr3yo5S1if5WRo9vLzTSfKyfTmrN9BwM7OV2BKNwLznsGSw");'
+          ></div>
+          <div class="absolute -bottom-2 right-4 bg-white dark:bg-primary px-4 py-1 rounded-full shadow-lg z-20">
+            <p class="text-primary dark:text-white text-sm font-bold">Level 5</p>
+          </div>
+        </div>
+        <div class="mt-8 text-center">
+          <h2 class="text-3xl font-bold tracking-tight">Cloudie</h2>
+          <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">Dreamy Samoyed Puppy</p>
+        </div>
+      </div>
+
+      <!-- Stat bars -->
+      <div class="grid grid-cols-1 gap-4 mb-8">
+        <!-- Hunger -->
+        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-5 rounded-xl soft-shadow">
+          <div class="flex justify-between items-end mb-3">
+            <div class="flex items-center gap-2">
+              <div class="size-8 rounded-full bg-pastel-yellow flex items-center justify-center">
+                <span class="material-symbols-outlined text-yellow-600 text-lg">restaurant</span>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Hunger</span>
+            </div>
+            <span class="text-xs font-bold text-slate-400">85 / 100</span>
+          </div>
+          <div class="h-4 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-pastel-yellow rounded-full border-r-4 border-yellow-200" style="width: 85%"></div>
+          </div>
+        </div>
+        <!-- Happiness -->
+        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-5 rounded-xl soft-shadow">
+          <div class="flex justify-between items-end mb-3">
+            <div class="flex items-center gap-2">
+              <div class="size-8 rounded-full bg-pastel-pink flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-lg">favorite</span>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Happiness</span>
+            </div>
+            <span class="text-xs font-bold text-slate-400">92 / 100</span>
+          </div>
+          <div class="h-4 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-primary/40 rounded-full border-r-4 border-primary/20" style="width: 92%"></div>
+          </div>
+        </div>
+        <!-- Energy -->
+        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-5 rounded-xl soft-shadow">
+          <div class="flex justify-between items-end mb-3">
+            <div class="flex items-center gap-2">
+              <div class="size-8 rounded-full bg-pastel-mint flex items-center justify-center">
+                <span class="material-symbols-outlined text-emerald-600 text-lg">auto_awesome</span>
+              </div>
+              <span class="font-bold text-slate-700 dark:text-slate-200">Energy</span>
+            </div>
+            <span class="text-xs font-bold text-slate-400">64 / 100</span>
+          </div>
+          <div class="h-4 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-pastel-mint rounded-full border-r-4 border-emerald-200" style="width: 64%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-between items-center gap-4 mb-24">
+        <button class="flex-1 aspect-square max-h-24 bg-white dark:bg-slate-800 rounded-full puffy-button flex flex-col items-center justify-center gap-1 group">
+          <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">bakery_dining</span>
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Feed</span>
+        </button>
+        <button class="flex-1 aspect-square max-h-24 bg-white dark:bg-slate-800 rounded-full puffy-button flex flex-col items-center justify-center gap-1 group">
+          <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">toys</span>
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Play</span>
+        </button>
+        <button class="flex-1 aspect-square max-h-24 bg-white dark:bg-slate-800 rounded-full puffy-button flex flex-col items-center justify-center gap-1 group">
+          <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">soap</span>
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Clean</span>
+        </button>
+        <button class="flex-1 aspect-square max-h-24 bg-white dark:bg-slate-800 rounded-full puffy-button flex flex-col items-center justify-center gap-1 group">
+          <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">bedtime</span>
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Sleep</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 2 : STATS                                             -->
+  <!-- ============================================================ -->
+  <div id="screen-stats" class="screen flex-col min-h-screen" style="background: linear-gradient(180deg, #fff5f7 0%, #fde4cf 100%);">
+    <!-- Header -->
+    <div class="flex items-center p-6 pt-8 justify-between max-w-[430px] mx-auto w-full">
+      <button onclick="navigateTo('home')" class="bg-white/80 p-2 rounded-full shadow-sm text-primary flex items-center justify-center">
+        <span class="material-symbols-outlined">arrow_back_ios_new</span>
+      </button>
+      <h2 class="text-slate-900 text-xl font-bold tracking-tight flex-1 text-center">Sweet Candy Stats</h2>
+      <div class="flex w-12 items-center justify-end">
+        <button class="bg-white/80 p-2 rounded-full shadow-sm text-primary flex items-center justify-center">
+          <span class="material-symbols-outlined">more_horiz</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Jelly Container -->
+    <div class="px-6 flex-1 max-w-[430px] mx-auto w-full">
+      <div class="glass-card rounded-xl p-8 flex flex-col items-center jelly-shadow relative overflow-hidden">
+        <!-- Background decorative shapes -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-jelly-blue/20 rounded-full blur-2xl"></div>
+
+        <!-- Pet Profile -->
+        <div class="relative mb-6">
+          <div
+            class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-40 w-40 border-8 border-white shadow-lg ring-4 ring-primary/20"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDd_wHCdbIc7Uy28efKJPLyOu5nEd06jJ9o5AurszjPxyoAbRxS-Fxsm6_4SSfUJ7zQERzhKYPRkqjBJusnepn46LM1_aG4Fd4iBBwaJ6KFQWW6BLnzFzGE8P9Hbxtg1K9GeWoH44n_zM8cpi-WErzDK8DABiAzploKodqtxHIwebhf7hrmmSWJSBiCBTNBkuMRfUHBov6scSyXkHwoEGJWHEAHvbtTe129dppl0Wrt-PV8mJnbh3rfHDvHHVIOC03mMYrrIhc4kQ");'
+          ></div>
+          <!-- Floating Hearts -->
+          <div class="absolute -right-2 top-0 bg-white p-2 rounded-full shadow-md floating-heart">
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">favorite</span>
+          </div>
+          <div class="absolute -left-4 top-12 bg-white p-1.5 rounded-full shadow-md floating-heart scale-75">
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">favorite</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center text-center space-y-1">
+          <p class="text-slate-900 text-3xl font-bold tracking-tight">Hye-mily</p>
+          <div class="bg-primary/10 px-4 py-1 rounded-full">
+            <p class="text-primary text-sm font-bold uppercase tracking-widest">Lv. 15 Sweet Jelly</p>
+          </div>
+          <p class="text-slate-500 text-sm font-medium mt-2">Adopted on Oct 24, 2023</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-3 w-full mt-8">
+          <div class="flex flex-col gap-1 rounded-lg bg-jelly-pink/20 p-4 items-center text-center border-2 border-white">
+            <p class="text-primary text-2xl font-black">850</p>
+            <p class="text-primary/70 text-[10px] font-bold uppercase">Hearts</p>
+          </div>
+          <div class="flex flex-col gap-1 rounded-lg bg-jelly-blue/20 p-4 items-center text-center border-2 border-white">
+            <p class="text-sky-600 text-2xl font-black">12</p>
+            <p class="text-sky-600/70 text-[10px] font-bold uppercase">Items</p>
+          </div>
+          <div class="flex flex-col gap-1 rounded-lg bg-jelly-yellow p-4 items-center text-center border-2 border-white">
+            <p class="text-orange-500 text-2xl font-black">98%</p>
+            <p class="text-orange-500/70 text-[10px] font-bold uppercase">Happy</p>
+          </div>
+        </div>
+
+        <!-- Friendship Bar -->
+        <div class="w-full mt-8 space-y-3">
+          <div class="flex justify-between items-center px-1">
+            <h4 class="text-slate-700 text-sm font-bold">Friendship Level</h4>
+            <span class="text-primary text-xs font-bold">Max Bond!</span>
+          </div>
+          <div class="w-full h-6 bg-white rounded-full p-1 shadow-inner border border-primary/10">
+            <div class="h-full bg-gradient-to-r from-primary to-jelly-pink rounded-full w-[92%] relative">
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticker Badges -->
+        <div class="w-full mt-8">
+          <h4 class="text-slate-700 text-sm font-bold mb-4 px-1">Traits &amp; Talents</h4>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-4 py-2 bg-white border-4 border-jelly-pink text-slate-800 text-xs font-black rounded-full shadow-sm rotate-[-2deg]">DREAMER</span>
+            <span class="px-4 py-2 bg-white border-4 border-jelly-blue text-slate-800 text-xs font-black rounded-full shadow-sm rotate-[3deg]">BOUNCY</span>
+            <span class="px-4 py-2 bg-white border-4 border-jelly-purple text-slate-800 text-xs font-black rounded-full shadow-sm rotate-[-1deg]">SHINY</span>
+            <span class="px-4 py-2 bg-white border-4 border-jelly-yellow text-slate-800 text-xs font-black rounded-full shadow-sm rotate-[2deg]">SWEET</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="h-28"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 3 : SHOP                                              -->
+  <!-- ============================================================ -->
+  <div id="screen-shop" class="screen flex-col min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-20 flex flex-col bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 pt-8 pb-4 max-w-[430px] mx-auto w-full">
+      <div class="flex items-center justify-between w-full">
+        <button onclick="navigateTo('home')" class="bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">arrow_back_ios_new</span>
+        </button>
+        <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">Marshmallow Shop</h1>
+        <div class="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
+          <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1">stars</span>
+          <span class="font-bold text-primary">1,240</span>
+        </div>
+      </div>
+      <p class="mt-4 text-center text-sm font-medium text-primary/70 uppercase tracking-widest">Today's Puffy Deals</p>
+    </header>
+
+    <!-- Shop content -->
+    <main class="flex-1 px-6 pb-32 max-w-[430px] mx-auto w-full">
+      <!-- Featured Item -->
+      <div class="relative mt-4 mb-8 overflow-hidden rounded-xl bg-white dark:bg-slate-800 puffy-shadow p-2">
+        <div class="relative h-48 w-full rounded-lg overflow-hidden bg-soft-peach dark:bg-primary/20">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-32 h-32 rounded-full bg-white/40 blur-2xl"></div>
+          </div>
+          <img
+            alt="Featured Item"
+            class="absolute inset-0 h-full w-full object-contain p-8 mix-blend-multiply dark:mix-blend-normal"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG0I5BrvbPBnJ2zaKsh7oF6p0pTsZ-4ihyAnMfyyVKQSKry9UZuhCPe8VdRmmcF40EqZRYEKwy0ILlh_VSEB45bnNCdgxPtmqPoWsNg4mRo-tEFi0VPphoMNOI0A5tA_ijQ_5pUxCLfF2-PauK_wRrUmhbpqEMOLsxZusWfcel7G2gOUf3ZrtiGqdh6DvPRWtCYIwNGIRe3QEPhnKXdplDG1AUVyRKDjd1E-GwYLUOwFQVU3UeUQAEfTyT_Ufah5WXTlo3Rh_xHA"
+          />
+          <div class="absolute top-4 left-4 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Limited</div>
+        </div>
+        <div class="p-4 flex justify-between items-end">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">Handmade Scarf</h3>
+            <div class="flex items-center gap-1 mt-1 text-primary">
+              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1">stars</span>
+              <span class="text-sm font-bold">450</span>
+            </div>
+          </div>
+          <button class="bg-primary text-white h-12 px-8 rounded-full font-bold puffy-shadow transition-transform active:scale-95">Buy</button>
+        </div>
+      </div>
+
+      <!-- Grid Items -->
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Item 1 -->
+        <div class="flex flex-col">
+          <div class="relative aspect-square rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center puffy-shadow inner-glow mb-3">
+            <img alt="Tiny Hat" class="w-3/4 h-3/4 object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxeCAGaPGkI_wG5uu0JayhvpJTQcGJVDmVTSSzcRk9CLbPXQlyTQs416doeOS10KKZW6KQ8eG3tTJzFcMkffL4sp3XErozw07GqCmspEc-xmITUGCgREzCvCBfGOTV0yiiGM_MjZUK47znLiVCNY505S1XlZUzlI-waBRZHKqrMb836IMuRMOjTy8eN7pTRl1cDdGnx9FChMS6A02V4AA9088supEuVuzRiWOJZo0aTWk0fJiKx-hdi4Gu62moO400mdbXR_eDfg" />
+          </div>
+          <div class="px-1">
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">Tiny Hat</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1">stars</span>
+              <span class="text-xs font-bold text-slate-500">100</span>
+            </div>
+          </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="flex flex-col">
+          <div class="relative aspect-square rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center puffy-shadow inner-glow mb-3">
+            <img alt="Cookie" class="w-3/4 h-3/4 object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZHyTjyhgPBopBlvIipPs97MRyzSOtimRHXxoneFrIOCD6liEhFHd0NweUajYEia1JpnH5n2XuRPxrPweKElUOSGd3RYIz48dJ6XtJGfu6i63l4e4veMQtPb7IY3QwthBTnUf-FgVtptMM-XkPI-NUkNRB2wYP13lM_4eICncRriEGbAKL6fx-zeG7OJZkx23UkhECmN9CqE43-Q3ST_wvyPH4ahYqaDZGMrhLB0UoXwmSgGIVSH8txFyXMSJSF8ZiCcU-Hyb5Vw" />
+          </div>
+          <div class="px-1">
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">Butter Cookie</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1">stars</span>
+              <span class="text-xs font-bold text-slate-500">50</span>
+            </div>
+          </div>
+        </div>
+        <!-- Item 3 -->
+        <div class="flex flex-col">
+          <div class="relative aspect-square rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center puffy-shadow inner-glow mb-3">
+            <img alt="Soft Pillow" class="w-3/4 h-3/4 object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1o0ErK0FfxgCdRzfBQD7MXpOCTiIvhKMgRno-oqu4Mtg0ZZubxLAKiYI523GmwiGmOMTyPKsGjdkaCJIdp7_7smbdi2spenNJdrTlydO-GzWywVRJ3dDD9AEjmOUWmDNPNw5QTD0Rn4ipaYTpW9bkVkNXneSzSIanrz6PeYrIqA8UlS_TAGEKvKk7yO4gVN7kk-Z3qYFRhR3iT-LygJSktEJlLvMrF8B__YlP3q_tDEr9n4Guq2WmT_XXbvdNwYzXaQ4USlgYZg" />
+          </div>
+          <div class="px-1">
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">Soft Pillow</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1">stars</span>
+              <span class="text-xs font-bold text-slate-500">150</span>
+            </div>
+          </div>
+        </div>
+        <!-- Item 4 -->
+        <div class="flex flex-col">
+          <div class="relative aspect-square rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center puffy-shadow inner-glow mb-3">
+            <img alt="Star Candy" class="w-3/4 h-3/4 object-contain rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1fC1B1C76V4TKhDRNYxtVDmf7vHfa6hmCZ8gvs1V6uR22X1cyZyD_UDzQu0Hku1JEwYBilFc3rG_8qKebv1C3vOzZC5S5SbsaVwjQtLF1s9_h_kHAOISVIcWiN0dSqGNt_mLePDRYqjn0h-R-vsaGBFazMC6BtOUx4O08jdcrndqOe-Hdcbw5TDIRp0kEejWcraqCa8fBuuzW8n7J1N__r8Nt1WkFiiS5-kajef5qbmVqe8Flw8z9WwVAYE7oxcWGKLx6PQUgVA" />
+          </div>
+          <div class="px-1">
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">Star Candy</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1">stars</span>
+              <span class="text-xs font-bold text-slate-500">20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Arrivals -->
+      <div class="mt-10 mb-6 flex items-center justify-between">
+        <h4 class="text-lg font-bold">New Arrivals</h4>
+        <button class="text-primary font-bold text-sm">See All</button>
+      </div>
+      <div class="flex gap-4 overflow-x-auto pb-6 -mx-6 px-6 no-scrollbar">
+        <div class="min-w-[140px] flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-xl puffy-shadow">
+          <div class="w-20 h-20 rounded-full bg-soft-peach flex items-center justify-center mb-2">
+            <span class="material-symbols-outlined text-primary text-3xl">brush</span>
+          </div>
+          <p class="text-xs font-bold">Paints</p>
+          <p class="text-[10px] text-slate-400">80 stars</p>
+        </div>
+        <div class="min-w-[140px] flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-xl puffy-shadow">
+          <div class="w-20 h-20 rounded-full bg-soft-peach flex items-center justify-center mb-2">
+            <span class="material-symbols-outlined text-primary text-3xl">toys</span>
+          </div>
+          <p class="text-xs font-bold">Ball</p>
+          <p class="text-[10px] text-slate-400">40 stars</p>
+        </div>
+        <div class="min-w-[140px] flex flex-col items-center p-4 bg-white dark:bg-slate-800 rounded-xl puffy-shadow">
+          <div class="w-20 h-20 rounded-full bg-soft-peach flex items-center justify-center mb-2">
+            <span class="material-symbols-outlined text-primary text-3xl">bedroom_baby</span>
+          </div>
+          <p class="text-xs font-bold">Bed</p>
+          <p class="text-[10px] text-slate-400">300 stars</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM NAVIGATION (shared across all screens)                -->
+  <!-- ============================================================ -->
+  <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 px-6 pb-8 pt-4 z-50">
+    <div class="flex justify-between items-center max-w-md mx-auto">
+      <button onclick="navigateTo('home')" data-nav="home" class="flex flex-col items-center gap-1 text-primary">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">home</span>
+        <span class="text-[10px] font-bold uppercase">Home</span>
+      </button>
+      <button onclick="navigateTo('stats')" data-nav="stats" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">bar_chart</span>
+        <span class="text-[10px] font-bold uppercase">Stats</span>
+      </button>
+      <button onclick="navigateTo('shop')" data-nav="shop" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        <span class="text-[10px] font-bold uppercase">Shop</span>
+      </button>
+      <button data-nav="settings" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-[10px] font-bold uppercase">Settings</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- Navigation Script                                            -->
+  <!-- ============================================================ -->
+  <script>
+    function navigateTo(screen) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      // Show target screen
+      const target = document.getElementById('screen-' + screen);
+      if (target) target.classList.add('active');
+      // Update nav active states
+      document.querySelectorAll('#bottom-nav button').forEach(btn => {
+        const nav = btn.getAttribute('data-nav');
+        if (nav === screen) {
+          btn.classList.remove('text-slate-400');
+          btn.classList.add('text-primary');
+          // Set FILL 1 on the icon
+          btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+        } else {
+          btn.classList.remove('text-primary');
+          btn.classList.add('text-slate-400');
+          btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+        }
+      });
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>

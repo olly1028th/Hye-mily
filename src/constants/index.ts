@@ -1,5 +1,6 @@
 import type {
   SpeciesConfig,
+  BreedConfig,
   GameAction,
   GameEvent,
 } from '../types';
@@ -441,3 +442,215 @@ export const STAGE_LABELS: Record<string, string> = {
   teen: '청소년',
   adult: '성인',
 };
+
+// ============================================
+// 하위 품종 설정 — 종당 4품종, 총 16종
+// ============================================
+//
+//  설계 원칙
+//  ─────────────────────────────────────────
+//  · statModifiers: 종 기본 initialStats에 더해짐 (양수/음수)
+//  · decayModifiers: 종 기본 decayRates에 곱해짐 (1.0=동일)
+//    → 품종 차이는 ±5~15 범위의 미세 조정으로,
+//      대분류(종)의 큰 특성은 유지하면서 플레이 느낌을 차별화
+//
+
+export const BREED_CONFIGS: Record<string, BreedConfig> = {
+
+  // ──────────────────────────────────────
+  //  🐱 고양이 품종
+  // ──────────────────────────────────────
+
+  korean_shorthair: {
+    breedId: 'korean_shorthair',
+    species: 'cat',
+    displayName: '코리안 숏헤어',
+    description: '한국 토종 고양이. 영리하고 적응력이 뛰어나 초보자에게 딱이에요.',
+    emoji: '🐱',
+    statModifiers: { health: 10, energy: 5 },
+    decayModifiers: {},
+    difficulty: 'easy',
+  },
+
+  persian: {
+    breedId: 'persian',
+    species: 'cat',
+    displayName: '페르시안',
+    description: '풍성한 장모가 매력적인 페르시안. 털 관리를 안 하면 금방 엉켜요.',
+    emoji: '😺',
+    statModifiers: { happiness: 5, cleanliness: -10 },
+    decayModifiers: { cleanliness: 1.3 },  // 털 때문에 청결 감소 빠름
+    difficulty: 'hard',
+  },
+
+  siamese: {
+    breedId: 'siamese',
+    species: 'cat',
+    displayName: '샴',
+    description: '수다쟁이 샴 고양이. 사교적이라 외로움을 잘 타요.',
+    emoji: '😼',
+    statModifiers: { happiness: -10, energy: 10 },
+    decayModifiers: { happiness: 1.3 },  // 외로움 타서 행복도 빨리 감소
+    difficulty: 'normal',
+  },
+
+  russian_blue: {
+    breedId: 'russian_blue',
+    species: 'cat',
+    displayName: '러시안 블루',
+    description: '은빛 털이 우아한 러시안 블루. 조용하고 건강한 편이에요.',
+    emoji: '🐈',
+    statModifiers: { health: 5, happiness: 5, hunger: -5 },
+    decayModifiers: { health: 0.8 },  // 건강 감소 느림
+    difficulty: 'normal',
+  },
+
+  // ──────────────────────────────────────
+  //  🐶 강아지 품종
+  // ──────────────────────────────────────
+
+  jindo: {
+    breedId: 'jindo',
+    species: 'dog',
+    displayName: '진돗개',
+    description: '충성심 최강 한국 대표견. 체력이 좋지만 고집이 세서 씻기기가 힘들어요.',
+    emoji: '🐕',
+    statModifiers: { health: 10, energy: 5, cleanliness: -5 },
+    decayModifiers: { happiness: 0.85, cleanliness: 1.2 },  // 충성심↑ 행복감소↓, 청결감소↑
+    difficulty: 'normal',
+  },
+
+  golden_retriever: {
+    breedId: 'golden_retriever',
+    species: 'dog',
+    displayName: '골든 리트리버',
+    description: '모두의 친구! 밥을 엄청 좋아하고 놀아줄수록 신나요.',
+    emoji: '🦮',
+    statModifiers: { happiness: 5, hunger: -10 },
+    decayModifiers: { hunger: 1.2 },  // 식욕 왕성
+    difficulty: 'easy',
+  },
+
+  pomeranian: {
+    breedId: 'pomeranian',
+    species: 'dog',
+    displayName: '포메라니안',
+    description: '작지만 에너지 넘치는 솜뭉치. 털 관리에 신경 써야 해요.',
+    emoji: '🐶',
+    statModifiers: { energy: 10, cleanliness: -10 },
+    decayModifiers: { energy: 1.2, cleanliness: 1.3 },
+    difficulty: 'hard',
+  },
+
+  shiba_inu: {
+    breedId: 'shiba_inu',
+    species: 'dog',
+    displayName: '시바 이누',
+    description: '독립적이고 고집 센 시바견. 마이페이스라 행복도 관리가 쉬운 편이에요.',
+    emoji: '🐕‍🦺',
+    statModifiers: { happiness: 10, hunger: 5 },
+    decayModifiers: { happiness: 0.8 },  // 도도해서 행복 감소 느림
+    difficulty: 'easy',
+  },
+
+  // ──────────────────────────────────────
+  //  🦎 도마뱀 품종
+  // ──────────────────────────────────────
+
+  leopard_gecko: {
+    breedId: 'leopard_gecko',
+    species: 'lizard',
+    displayName: '레오파드 게코',
+    description: '입문자용 도마뱀의 대명사. 온순하고 키우기 쉬워요.',
+    emoji: '🦎',
+    statModifiers: { energy: 10, health: 5 },
+    decayModifiers: { energy: 0.85 },  // 에너지 감소 느림
+    difficulty: 'easy',
+  },
+
+  bearded_dragon: {
+    breedId: 'bearded_dragon',
+    species: 'lizard',
+    displayName: '비어디 드래곤',
+    description: '파충류치고 사교적! 밥을 잘 먹지만 에너지를 많이 써요.',
+    emoji: '🐉',
+    statModifiers: { happiness: 10, hunger: -5 },
+    decayModifiers: { hunger: 1.2, energy: 1.1 },
+    difficulty: 'normal',
+  },
+
+  crested_gecko: {
+    breedId: 'crested_gecko',
+    species: 'lizard',
+    displayName: '크레스티드 게코',
+    description: '속눈썹이 매력적인 나무 도마뱀. 야행성이라 에너지 패턴이 독특해요.',
+    emoji: '🌿',
+    statModifiers: { energy: -5, cleanliness: 5 },
+    decayModifiers: { energy: 1.15 },
+    difficulty: 'normal',
+  },
+
+  chameleon: {
+    breedId: 'chameleon',
+    species: 'lizard',
+    displayName: '카멜레온',
+    description: '색이 변하는 신비한 도마뱀. 환경에 예민해서 관리가 까다로워요.',
+    emoji: '🌈',
+    statModifiers: { health: -10, happiness: -5, energy: -5 },
+    decayModifiers: { health: 1.2, energy: 1.2 },
+    difficulty: 'hard',
+  },
+
+  // ──────────────────────────────────────
+  //  🦔 고슴도치 품종
+  // ──────────────────────────────────────
+
+  four_toed: {
+    breedId: 'four_toed',
+    species: 'hedgehog',
+    displayName: '네발가락 고슴도치',
+    description: '가장 대중적인 애완 고슴도치. 균형 잡힌 성격으로 입문용이에요.',
+    emoji: '🦔',
+    statModifiers: { health: 5, happiness: 5 },
+    decayModifiers: {},
+    difficulty: 'easy',
+  },
+
+  algerian: {
+    breedId: 'algerian',
+    species: 'hedgehog',
+    displayName: '알제리안 고슴도치',
+    description: '덩치가 좀 더 크고 활발해요. 밥을 많이 먹고 에너지도 넘쳐요.',
+    emoji: '🦔',
+    statModifiers: { energy: 10, hunger: -10 },
+    decayModifiers: { hunger: 1.2, energy: 0.9 },
+    difficulty: 'normal',
+  },
+
+  egyptian_eared: {
+    breedId: 'egyptian_eared',
+    species: 'hedgehog',
+    displayName: '이집트 귀큰 고슴도치',
+    description: '큰 귀가 매력적! 호기심 많지만 스트레스에 극도로 민감해요.',
+    emoji: '👂',
+    statModifiers: { happiness: -10, health: -5 },
+    decayModifiers: { happiness: 1.3, health: 1.15 },
+    difficulty: 'hard',
+  },
+
+  daurian: {
+    breedId: 'daurian',
+    species: 'hedgehog',
+    displayName: '다우리안 고슴도치',
+    description: '추위에 강한 북방 종. 건강하지만 겨울잠을 좋아해서 에너지가 낮아요.',
+    emoji: '❄️',
+    statModifiers: { health: 10, energy: -10 },
+    decayModifiers: { health: 0.85, energy: 1.15 },
+    difficulty: 'normal',
+  },
+};
+
+/** 특정 종에 속하는 품종 목록 가져오기 */
+export function getBreedsBySpecies(species: string): BreedConfig[] {
+  return Object.values(BREED_CONFIGS).filter((b) => b.species === species);
+}

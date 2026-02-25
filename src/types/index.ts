@@ -2,8 +2,19 @@
 // 반려동물 타마고치 게임 - 핵심 타입 정의
 // ============================================
 
-/** 반려동물 종류 */
+/** 반려동물 종류 (대분류) */
 export type PetSpecies = 'cat' | 'dog' | 'lizard' | 'hedgehog';
+
+/** 하위 품종 ID */
+export type BreedId =
+  // 고양이
+  | 'korean_shorthair' | 'persian' | 'siamese' | 'russian_blue'
+  // 강아지
+  | 'jindo' | 'golden_retriever' | 'pomeranian' | 'shiba_inu'
+  // 도마뱀
+  | 'leopard_gecko' | 'bearded_dragon' | 'crested_gecko' | 'chameleon'
+  // 고슴도치
+  | 'four_toed' | 'algerian' | 'egyptian_eared' | 'daurian';
 
 /** 성장 단계: 아기 → 청소년 → 성인 */
 export type GrowthStage = 'baby' | 'teen' | 'adult';
@@ -45,8 +56,10 @@ export interface Pet {
   id: string;
   /** 사용자가 지어준 이름 */
   name: string;
-  /** 종류 */
+  /** 대분류 종류 */
   species: PetSpecies;
+  /** 하위 품종 */
+  breed: BreedId;
   /** 현재 성장 단계 */
   stage: GrowthStage;
   /** 핵심 스탯 */
@@ -142,6 +155,25 @@ export interface SpeciesConfig {
   vulnerabilityPenalty: number;
   /** 오버케어 임계값 (이 이상이면 효과 반감) */
   overcareThreshold: number;
+}
+
+// ============================================
+// 하위 품종 특성 타입
+// ============================================
+
+/** 품종별 스탯 보정 (종 기본값에 더해짐) */
+export interface BreedConfig {
+  breedId: BreedId;
+  species: PetSpecies;
+  displayName: string;
+  description: string;
+  emoji: string;
+  /** 종 기본 초기스탯에 더해지는 보정치 */
+  statModifiers: Partial<PetStats>;
+  /** 종 기본 decayRates에 곱해지는 배율 (1.0 = 변화없음) */
+  decayModifiers: Partial<PetStats>;
+  /** 난이도 라벨 */
+  difficulty: 'easy' | 'normal' | 'hard';
 }
 
 // ============================================

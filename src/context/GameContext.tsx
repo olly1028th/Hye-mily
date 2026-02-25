@@ -6,7 +6,7 @@ import {
   type ReactNode,
   type Dispatch,
 } from 'react';
-import type { GameState, Pet, ActionType, PetSpecies, EventLogEntry } from '../types';
+import type { GameState, Pet, ActionType, PetSpecies, BreedId, EventLogEntry } from '../types';
 import { DEFAULT_TICK_INTERVAL, MAX_EVENT_LOG, MAX_OFFLINE_TICKS } from '../constants';
 import { createPet, performAction, processOfflineTicks } from '../utils/gameLogic';
 import { saveGame, loadGame, deleteSave } from '../utils/saveLoad';
@@ -16,7 +16,7 @@ import { saveGame, loadGame, deleteSave } from '../utils/saveLoad';
 // ============================================
 
 type GameActionPayload =
-  | { type: 'START_GAME'; name: string; species: PetSpecies }
+  | { type: 'START_GAME'; name: string; species: PetSpecies; breed: BreedId }
   | { type: 'PERFORM_ACTION'; actionType: ActionType }
   | { type: 'TICK'; pet: Pet }
   | { type: 'SET_PET'; pet: Pet }
@@ -48,7 +48,7 @@ const initialState: GameState = {
 function gameReducer(state: GameState, action: GameActionPayload): GameState {
   switch (action.type) {
     case 'START_GAME': {
-      const pet = createPet(action.name, action.species);
+      const pet = createPet(action.name, action.species, action.breed);
       return {
         ...state,
         view: 'playing',

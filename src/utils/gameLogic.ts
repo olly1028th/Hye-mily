@@ -7,9 +7,11 @@ import type {
   ActionType,
   GameEvent,
   StatKey,
+  BreedId,
 } from '../types';
 import {
   SPECIES_CONFIGS,
+  BREED_CONFIGS,
   ACTIONS,
   STAT_MIN,
   STAT_MAX,
@@ -44,19 +46,34 @@ export function applyEffects(
 }
 
 // ============================================
-// 펫 생성 — 종별 초기 스탯 사용
+// 펫 생성 — 종 기본 + 품종 보정 적용
 // ============================================
 
-export function createPet(name: string, species: PetSpecies): Pet {
-  const config = SPECIES_CONFIGS[species];
+/** 종 기본 스탯에 품종 보정치를 적용한 초기 스탯 계산 */
+function computeInitialStats(species: PetSpecies, breed: BreedId): PetStats {
+  const base = SPECIES_CONFIGS[species].initialStats;
+  const breedCfg = BREED_CONFIGS[breed];
+  const mods = breedCfg?.statModifiers ?? {};
+
+  return {
+    hunger: clampStat(base.hunger + (mods.hunger ?? 0)),
+    happiness: clampStat(base.happiness + (mods.happiness ?? 0)),
+    energy: clampStat(base.energy + (mods.energy ?? 0)),
+    cleanliness: clampStat(base.cleanliness + (mods.cleanliness ?? 0)),
+    health: clampStat(base.health + (mods.health ?? 0)),
+  };
+}
+
+export function createPet(name: string, species: PetSpecies, breed: BreedId): Pet {
   const now = Date.now();
 
   return {
     id: crypto.randomUUID(),
     name,
     species,
+    breed,
     stage: 'baby',
-    stats: { ...config.initialStats },
+    stats: computeInitialStats(species, breed),
     mood: 'happy',
     age: 0,
     exp: 0,
@@ -66,6 +83,14 @@ export function createPet(name: string, species: PetSpecies): Pet {
     bornAt: now,
     isAlive: true,
   };
+}
+
+/** 종 기본 decay에 품종 decayModifiers 배율을 적용 */
+function getEffectiveDecayRate(pet: Pet, statKey: StatKey): number {
+  const baseRate = SPECIES_CONFIGS[pet.species].decayRates[statKey];
+  const breedCfg = BREED_CONFIGS[pet.breed];
+  const modifier = breedCfg?.decayModifiers?.[statKey] ?? 1.0;
+  return baseRate * modifier;
 }
 
 // ============================================
@@ -135,13 +160,13 @@ export function processTick(pet: Pet): Pet {
   const stageMul = config.stageMultipliers[pet.stage];
   const dr = stageMul.decayRate;
 
-  // 종별 감소량 × 단계별 감소배율
+  // (종 기본 × 품종 배율) × 단계 배율
   const decayedStats: PetStats = {
-    hunger: clampStat(pet.stats.hunger - config.decayRates.hunger * dr),
-    happiness: clampStat(pet.stats.happiness - config.decayRates.happiness * dr),
-    energy: clampStat(pet.stats.energy - config.decayRates.energy * dr),
-    cleanliness: clampStat(pet.stats.cleanliness - config.decayRates.cleanliness * dr),
-    health: clampStat(pet.stats.health - config.decayRates.health * dr),
+    hunger: clampStat(pet.stats.hunger - getEffectiveDecayRate(pet, 'hunger') * dr),
+    happiness: clampStat(pet.stats.happiness - getEffectiveDecayRate(pet, 'happiness') * dr),
+    energy: clampStat(pet.stats.energy - getEffectiveDecayRate(pet, 'energy') * dr),
+    cleanliness: clampStat(pet.stats.cleanliness - getEffectiveDecayRate(pet, 'cleanliness') * dr),
+    health: clampStat(pet.stats.health - getEffectiveDecayRate(pet, 'health') * dr),
   };
 
   // 일반 위험 스탯 → 건강 추가 감소

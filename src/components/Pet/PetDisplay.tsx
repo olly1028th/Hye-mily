@@ -1,16 +1,10 @@
 import { useGameContext } from '../../context/GameContext';
-import { SPECIES_CONFIGS, STAGE_LABELS } from '../../constants';
+import { SPECIES_CONFIGS, BREED_CONFIGS, STAGE_LABELS } from '../../constants';
 import './PetDisplay.css';
 
-/** 종 + 단계에 따른 이모지 반환 (스프라이트 대용) */
-function getPetEmoji(species: string, stage: string): string {
-  const emojis: Record<string, Record<string, string>> = {
-    cat: { baby: '🐱', teen: '😺', adult: '😸' },
-    dog: { baby: '🐶', teen: '🐕', adult: '🦮' },
-    lizard: { baby: '🦎', teen: '🦎', adult: '🐊' },
-    hedgehog: { baby: '🦔', teen: '🦔', adult: '🦔' },
-  };
-  return emojis[species]?.[stage] ?? '❓';
+/** 품종 이모지 반환 (breed config에서 가져옴) */
+function getPetEmoji(breed: string): string {
+  return BREED_CONFIGS[breed]?.emoji ?? '❓';
 }
 
 /** 기분에 따른 말풍선 */
@@ -31,14 +25,15 @@ export default function PetDisplay() {
   if (!pet) return null;
 
   const config = SPECIES_CONFIGS[pet.species];
-  const emoji = getPetEmoji(pet.species, pet.stage);
+  const breedConfig = BREED_CONFIGS[pet.breed];
+  const emoji = getPetEmoji(pet.breed);
   const stageLabel = STAGE_LABELS[pet.stage];
 
   return (
     <div className={`pet-display mood-${pet.mood}`}>
       <div className="pet-info-bar">
         <span className="pet-name">{pet.name}</span>
-        <span className="pet-species">{config.displayName}</span>
+        <span className="pet-species">{breedConfig?.displayName ?? config.displayName}</span>
         <span className="pet-stage">{stageLabel}</span>
       </div>
 

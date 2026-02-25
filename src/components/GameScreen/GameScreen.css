@@ -1,0 +1,80 @@
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #dfe6e9 0%, #b2bec3 100%);
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
+}
+
+.game-screen.gameover {
+  justify-content: center;
+  background: linear-gradient(180deg, #636e72 0%, #2d3436 100%);
+  color: white;
+  text-align: center;
+}
+
+.gameover-age {
+  color: #b2bec3;
+  margin: 1rem 0;
+}
+
+.restart-button {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  background: #e17055;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.restart-button:hover {
+  background: #d63031;
+}
+
+.pause-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #2d3436;
+  backdrop-filter: blur(4px);
+}
+
+.event-toast {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.75rem 1.5rem;
+  background: rgba(45, 52, 54, 0.9);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  animation: toast-in 0.3s ease;
+  z-index: 100;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

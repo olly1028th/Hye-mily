@@ -1,4 +1,5 @@
 import { GameProvider, useGameContext } from './context/GameContext';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import StartScreen from './components/StartScreen/StartScreen';
 import GameScreen from './components/GameScreen/GameScreen';
 
@@ -14,9 +15,11 @@ function AppContent() {
 
 function App() {
   return (
-    <GameProvider>
-      <AppContent />
-    </GameProvider>
+    <ErrorBoundary>
+      <GameProvider>
+        <AppContent />
+      </GameProvider>
+    </ErrorBoundary>
   );
 }
 

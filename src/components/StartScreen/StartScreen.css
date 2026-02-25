@@ -179,6 +179,14 @@
   font-size: 1.8rem;
 }
 
+.breed-thumb-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
 .breed-difficulty {
   font-size: 0.65rem;
   font-weight: 700;
@@ -235,6 +243,16 @@
 
 .preview-emoji {
   font-size: 4rem;
+  margin-bottom: 0.3rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.preview-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   margin-bottom: 0.3rem;
   animation: bounce 2s ease-in-out infinite;
 }

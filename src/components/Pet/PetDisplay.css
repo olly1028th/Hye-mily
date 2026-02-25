@@ -55,20 +55,93 @@
   margin-bottom: 0.5rem;
 }
 
+/* ============================================
+   이모지 fallback 모드
+   ============================================ */
+
 .pet-sprite {
   font-size: 6rem;
   transition: transform 0.3s;
   animation: bounce 2s ease-in-out infinite;
 }
-
-.pet-sprite.stage-baby { font-size: 4rem; }
-.pet-sprite.stage-teen { font-size: 5.5rem; }
+.pet-sprite.stage-baby  { font-size: 4rem; }
+.pet-sprite.stage-teen  { font-size: 5.5rem; }
 .pet-sprite.stage-adult { font-size: 7rem; }
+
+/* ============================================
+   실사 이미지 모드
+   ============================================ */
+
+.pet-image-wrapper {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  animation: bounce 2s ease-in-out infinite;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* 성장 단계별 크기 */
+.pet-image-wrapper.stage-baby  { width: 140px; height: 140px; }
+.pet-image-wrapper.stage-teen  { width: 180px; height: 180px; }
+.pet-image-wrapper.stage-adult { width: 220px; height: 220px; }
+
+.pet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.4s ease;
+}
+
+/* ── 기분별 이미지 CSS 필터 ──
+   같은 사진으로도 mood가 시각적으로 구분됨 */
+
+.mood-filter-happy .pet-image {
+  filter: brightness(1.05) saturate(1.15);
+}
+
+.mood-filter-neutral .pet-image {
+  filter: brightness(1.0) saturate(1.0);
+}
+
+.mood-filter-sad .pet-image {
+  filter: brightness(0.85) saturate(0.6);
+}
+
+.mood-filter-angry .pet-image {
+  filter: brightness(0.95) saturate(1.3) hue-rotate(-10deg);
+}
+
+.mood-filter-sick .pet-image {
+  filter: brightness(0.7) saturate(0.3) sepia(0.2);
+}
+
+/* ── 기분별 컬러 오버레이 ──
+   이미지 위에 반투명 색상을 덧씌워 감정 강조 */
+
+.mood-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.mood-overlay-happy  { background: radial-gradient(circle, rgba(253, 203, 110, 0.15) 0%, transparent 70%); }
+.mood-overlay-neutral { background: none; }
+.mood-overlay-sad    { background: radial-gradient(circle, rgba(108, 92, 231, 0.2) 0%, transparent 70%); }
+.mood-overlay-angry  { background: radial-gradient(circle, rgba(214, 48, 49, 0.15) 0%, transparent 70%); }
+.mood-overlay-sick   { background: radial-gradient(circle, rgba(178, 190, 195, 0.3) 0%, transparent 70%); }
+
+/* ── 공통 애니메이션 ── */
 
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50%      { transform: translateY(-8px); }
 }
+
+/* ── EXP 바 ── */
 
 .pet-exp-bar {
   display: flex;

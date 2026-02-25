@@ -1,11 +1,7 @@
 import { useGameContext } from '../../context/GameContext';
 import { SPECIES_CONFIGS, BREED_CONFIGS, STAGE_LABELS } from '../../constants';
+import { getPetImageUrl } from '../../utils/petImages';
 import './PetDisplay.css';
-
-/** 품종 이모지 반환 (breed config에서 가져옴) */
-function getPetEmoji(breed: string): string {
-  return BREED_CONFIGS[breed]?.emoji ?? '❓';
-}
 
 /** 기분에 따른 말풍선 */
 function getMoodBubble(mood: string): string {
@@ -26,8 +22,11 @@ export default function PetDisplay() {
 
   const config = SPECIES_CONFIGS[pet.species];
   const breedConfig = BREED_CONFIGS[pet.breed];
-  const emoji = getPetEmoji(pet.breed);
   const stageLabel = STAGE_LABELS[pet.stage];
+
+  // 실사 이미지 시도 → 없으면 이모지 fallback
+  const imageUrl = getPetImageUrl(pet.breed, pet.stage, pet.mood);
+  const fallbackEmoji = breedConfig?.emoji ?? '❓';
 
   return (
     <div className={`pet-display mood-${pet.mood}`}>
@@ -39,7 +38,23 @@ export default function PetDisplay() {
 
       <div className="pet-sprite-area">
         <div className="mood-bubble">{getMoodBubble(pet.mood)}</div>
-        <div className={`pet-sprite stage-${pet.stage}`}>{emoji}</div>
+
+        {imageUrl ? (
+          /* ── 실사 이미지 모드 ── */
+          <div className={`pet-image-wrapper stage-${pet.stage} mood-filter-${pet.mood}`}>
+            <img
+              src={imageUrl}
+              alt={`${breedConfig?.displayName ?? pet.species} ${stageLabel}`}
+              className="pet-image"
+              draggable={false}
+            />
+            {/* 기분별 CSS 오버레이 */}
+            <div className={`mood-overlay mood-overlay-${pet.mood}`} />
+          </div>
+        ) : (
+          /* ── 이모지 fallback ── */
+          <div className={`pet-sprite stage-${pet.stage}`}>{fallbackEmoji}</div>
+        )}
       </div>
 
       <div className="pet-exp-bar">

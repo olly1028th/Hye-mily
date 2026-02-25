@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { PetSpecies, BreedId, BreedConfig } from '../../types';
 import { SPECIES_CONFIGS, BREED_CONFIGS, getBreedsBySpecies } from '../../constants';
+import { getBreedThumbnail } from '../../utils/petImages';
 import { useGameContext } from '../../context/GameContext';
 import './StartScreen.css';
 
@@ -121,7 +122,7 @@ export default function StartScreen() {
                 onClick={() => handleBreedSelect(breed.breedId)}
               >
                 <div className="breed-header">
-                  <span className="breed-emoji">{breed.emoji}</span>
+                  <BreedThumbnail breed={breed} />
                   <span
                     className="breed-difficulty"
                     style={{ background: DIFFICULTY_COLOR[breed.difficulty] }}
@@ -154,7 +155,7 @@ export default function StartScreen() {
           <h2 className="step-title">이름을 지어주세요!</h2>
 
           <div className="name-preview">
-            <span className="preview-emoji">{selectedBreedConfig.emoji}</span>
+            <BreedPreviewImage breed={selectedBreedConfig} />
             <span className="preview-breed">{selectedBreedConfig.displayName}</span>
           </div>
 
@@ -194,4 +195,22 @@ function statLabel(key: string): string {
     health: '건강',
   };
   return map[key] ?? key;
+}
+
+/** 품종 카드용 썸네일 — 이미지 있으면 사진, 없으면 이모지 */
+function BreedThumbnail({ breed }: { breed: BreedConfig }) {
+  const url = getBreedThumbnail(breed.breedId);
+  if (url) {
+    return <img src={url} alt={breed.displayName} className="breed-thumb-img" draggable={false} />;
+  }
+  return <span className="breed-emoji">{breed.emoji}</span>;
+}
+
+/** STEP 3 프리뷰 — 이미지 있으면 큰 사진, 없으면 이모지 */
+function BreedPreviewImage({ breed }: { breed: BreedConfig }) {
+  const url = getBreedThumbnail(breed.breedId);
+  if (url) {
+    return <img src={url} alt={breed.displayName} className="preview-image" draggable={false} />;
+  }
+  return <span className="preview-emoji">{breed.emoji}</span>;
 }

@@ -1,0 +1,22 @@
+{
+  "name": "Hye-mily - 반려동물 키우기",
+  "short_name": "Hye-mily",
+  "description": "귀여운 반려동물을 키워보세요! 다마고치 스타일 펫 육성 게임",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffecd2",
+  "theme_color": "#e17055",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

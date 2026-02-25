@@ -1,0 +1,83 @@
+.event-log-panel {
+  width: 100%;
+  max-width: 400px;
+  max-height: 250px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  animation: slide-down 0.25s ease;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.event-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #dfe6e9;
+}
+
+.event-log-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.event-log-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #636e72;
+  padding: 0.2rem 0.4rem;
+}
+
+.event-log-list {
+  overflow-y: auto;
+  max-height: 190px;
+  padding: 0.5rem;
+}
+
+.event-log-empty {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 0.85rem;
+  padding: 1rem;
+}
+
+.event-log-item {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+}
+
+.event-log-item:last-child {
+  border-bottom: none;
+}
+
+.event-log-time {
+  font-size: 0.7rem;
+  color: #b2bec3;
+  white-space: nowrap;
+  padding-top: 0.1rem;
+}
+
+.event-log-message {
+  font-size: 0.8rem;
+  color: #2d3436;
+  word-break: keep-all;
+}

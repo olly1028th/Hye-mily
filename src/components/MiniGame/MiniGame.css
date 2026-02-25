@@ -105,6 +105,13 @@
   font-size: 1.4rem;
 }
 
+.minigame-result-coins {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffd700;
+  margin: 0.5rem 0;
+}
+
 .minigame-result-bonus {
   font-size: 0.9rem;
   color: #00b894;

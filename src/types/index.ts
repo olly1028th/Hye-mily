@@ -78,6 +78,8 @@ export interface Pet {
   lastTickAt: number;
   /** 태어난 시각 (timestamp) */
   bornAt: number;
+  /** 보유 코인 (미니게임 & 액션으로 획득) */
+  coins: number;
   /** 살아있는지 여부 */
   isAlive: boolean;
 }
@@ -202,6 +204,23 @@ export interface GameState {
   isPaused: boolean;
   /** 이벤트 로그 (최근 N개) */
   eventLog: EventLogEntry[];
+}
+
+// ============================================
+// 상점 아이템 타입
+// ============================================
+
+/** 상점에서 구매 가능한 아이템 */
+export interface ShopItemDef {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  price: number;
+  /** 아이템 사용 시 스탯 효과 */
+  effects: Partial<PetStats>;
+  /** 카테고리 */
+  category: 'snack' | 'toy' | 'care';
 }
 
 // ============================================

@@ -6,9 +6,9 @@ import {
   type ReactNode,
   type Dispatch,
 } from 'react';
-import type { GameState, Pet, ActionType, PetSpecies, BreedId, EventLogEntry } from '../types';
+import type { GameState, Pet, ActionType, PetSpecies, BreedId, EventLogEntry, ShopItemDef } from '../types';
 import { DEFAULT_TICK_INTERVAL, MAX_EVENT_LOG, MAX_OFFLINE_TICKS } from '../constants';
-import { createPet, performAction, processOfflineTicks } from '../utils/gameLogic';
+import { createPet, performAction, processOfflineTicks, applyEffects, calculateMood } from '../utils/gameLogic';
 import { saveGame, loadGame, deleteSave } from '../utils/saveLoad';
 
 // ============================================
@@ -25,7 +25,9 @@ type GameActionPayload =
   | { type: 'RESET' }
   | { type: 'SET_COOLDOWN'; actionType: ActionType; time: number }
   | { type: 'LOAD_SAVE'; pet: Pet; startedAt: number }
-  | { type: 'ADD_EVENT'; message: string };
+  | { type: 'ADD_EVENT'; message: string }
+  | { type: 'ADD_COINS'; amount: number }
+  | { type: 'BUY_ITEM'; item: ShopItemDef };
 
 // ============================================
 // 초기 상태
@@ -107,6 +109,28 @@ function gameReducer(state: GameState, action: GameActionPayload): GameState {
       const log = [entry, ...state.eventLog].slice(0, MAX_EVENT_LOG);
       return { ...state, eventLog: log };
     }
+    case 'ADD_COINS': {
+      if (!state.pet) return state;
+      return {
+        ...state,
+        pet: { ...state.pet, coins: state.pet.coins + action.amount },
+      };
+    }
+    case 'BUY_ITEM': {
+      if (!state.pet) return state;
+      const { item } = action;
+      if (state.pet.coins < item.price) return state;
+      const newStats = applyEffects(state.pet.stats, item.effects);
+      return {
+        ...state,
+        pet: {
+          ...state.pet,
+          coins: state.pet.coins - item.price,
+          stats: newStats,
+          mood: calculateMood(newStats),
+        },
+      };
+    }
     default:
       return state;
   }
@@ -130,6 +154,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!save) return;
 
     let pet = save.pet;
+
+    // 구버전 세이브 호환: coins 필드 없으면 0으로 초기화
+    if (pet.coins === undefined) {
+      pet = { ...pet, coins: 0 };
+    }
 
     // 오프라인 동안 경과한 시간 계산
     if (pet.isAlive) {

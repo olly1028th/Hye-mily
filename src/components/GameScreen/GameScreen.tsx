@@ -18,9 +18,11 @@ import CatchGame from '../MiniGame/CatchGame';
 import Collection from '../Collection/Collection';
 import StatsScreen from '../StatsScreen/StatsScreen';
 import ShopScreen from '../ShopScreen/ShopScreen';
+import GuideScreen from '../GuideScreen/GuideScreen';
+import { ACTION_COIN_REWARD, MINIGAME_COIN_MULTIPLIER } from '../../constants';
 import './GameScreen.css';
 
-type TabId = 'home' | 'stats' | 'shop' | 'settings';
+type TabId = 'home' | 'stats' | 'shop' | 'guide';
 
 /** progress state를 갱신하고 localStorage에도 동기화 */
 function updateAndSave(
@@ -147,24 +149,38 @@ export default function GameScreen() {
     setShowMiniGame(false);
     dispatch({ type: 'PERFORM_ACTION', actionType: 'play' });
     play('play');
+
+    // 코인 보상: 점수 × 배율
+    const coinsEarned = score * MINIGAME_COIN_MULTIPLIER;
+    if (coinsEarned > 0) {
+      dispatch({ type: 'ADD_COINS', amount: coinsEarned });
+    }
+
     updateAndSave(setProgress, (prev) => ({
       ...prev,
       totalMiniGamesPlayed: prev.totalMiniGamesPlayed + 1,
       totalActionsPerformed: prev.totalActionsPerformed + 1,
     }));
-    if (score >= 5) {
-      dispatch({ type: 'ADD_EVENT', message: `미니게임에서 ${score}개를 잡아 추가 보상!` });
-    }
+
+    dispatch({
+      type: 'ADD_EVENT',
+      message: `미니게임에서 ${score}개를 잡아 ${coinsEarned}코인 획득!`,
+    });
   }, [dispatch, play]);
 
-  // 액션 수행 시 카운트
+  // 액션 수행 시 카운트 + 코인 보상
   const handleActionSound = useCallback((sound: string) => {
     play(sound as Parameters<typeof play>[0]);
     updateAndSave(setProgress, (prev) => ({
       ...prev,
       totalActionsPerformed: prev.totalActionsPerformed + 1,
     }));
-  }, [play]);
+    // 액션 코인 보상
+    const coinReward = ACTION_COIN_REWARD[sound] ?? 0;
+    if (coinReward > 0) {
+      dispatch({ type: 'ADD_COINS', amount: coinReward });
+    }
+  }, [play, dispatch]);
 
   const handleSoundToggle = useCallback(() => {
     const enabled = toggle();
@@ -178,27 +194,31 @@ export default function GameScreen() {
   // === 모든 훅이 위에서 선언된 뒤 early return ===
   if (!state.pet) return null;
 
-  // 게임오버 화면
+  // 게임오버 화면 — 부드러운 이별
   if (state.view === 'gameover') {
     return (
       <div className="game-screen gameover">
-        <h2>게임 오버</h2>
-        <p>{state.pet.name}(이)가 더 이상 함께할 수 없어요...</p>
+        <div className="gameover-emoji">💫</div>
+        <h2 className="gameover-title">{state.pet.name}(이)가 먼 여행을 떠났어요</h2>
+        <p className="gameover-desc">
+          건강이 0이 되면 반려동물은 새로운 모험을 찾아 떠나요.<br />
+          하지만 함께한 추억은 영원히 남아있어요!
+        </p>
         <p className="gameover-age">
-          함께한 시간: {state.pet.age} 틱
+          함께한 시간: {state.pet.age} 틱 · 모은 코인: {state.pet.coins}
         </p>
         <div className="gameover-buttons">
           <button
             className="restart-button"
             onClick={() => dispatch({ type: 'RESET' })}
           >
-            다시 시작하기
+            새 친구 만나기
           </button>
           <button
             className="collection-button"
             onClick={openCollectionWithLatest}
           >
-            도감 보기
+            추억 앨범
           </button>
         </div>
         {showCollection && (
@@ -283,11 +303,7 @@ export default function GameScreen() {
 
         {activeTab === 'stats' && <StatsScreen />}
         {activeTab === 'shop' && <ShopScreen />}
-        {activeTab === 'settings' && (
-          <div style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Settings coming soon</p>
-          </div>
-        )}
+        {activeTab === 'guide' && <GuideScreen />}
       </div>
 
       {/* ── Bottom Navigation ── */}
@@ -297,7 +313,7 @@ export default function GameScreen() {
             { id: 'home' as TabId, icon: 'home', label: 'Home' },
             { id: 'stats' as TabId, icon: 'bar_chart', label: 'Stats' },
             { id: 'shop' as TabId, icon: 'shopping_bag', label: 'Shop' },
-            { id: 'settings' as TabId, icon: 'settings', label: 'Settings' },
+            { id: 'guide' as TabId, icon: 'menu_book', label: 'Guide' },
           ]).map((tab) => (
             <button
               key={tab.id}

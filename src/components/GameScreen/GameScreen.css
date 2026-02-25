@@ -99,9 +99,28 @@
   padding: 2rem;
 }
 
-.gameover-age {
-  color: var(--text-muted);
+.gameover-emoji {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.gameover-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.gameover-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
   margin: 1rem 0;
+}
+
+.gameover-age {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin: 0.5rem 0 1.5rem;
 }
 
 .restart-button {

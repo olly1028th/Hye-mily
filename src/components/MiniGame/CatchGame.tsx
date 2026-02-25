@@ -99,6 +99,9 @@ export default function CatchGame({ onComplete, onCancel }: CatchGameProps) {
           <p className="minigame-result-score">
             잡은 개수: <strong>{score}</strong>
           </p>
+          <p className="minigame-result-coins">
+            💰 {score * 10} 코인 획득!
+          </p>
           <p className="minigame-result-bonus">
             {score >= 8
               ? '대단해요! 최고 보너스!'

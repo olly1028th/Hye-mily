@@ -3,6 +3,7 @@ import type {
   BreedConfig,
   GameAction,
   GameEvent,
+  ShopItemDef,
 } from '../types';
 
 // ============================================
@@ -654,3 +655,101 @@ export const BREED_CONFIGS: Record<string, BreedConfig> = {
 export function getBreedsBySpecies(species: string): BreedConfig[] {
   return Object.values(BREED_CONFIGS).filter((b) => b.species === species);
 }
+
+// ============================================
+// 코인 보상
+// ============================================
+
+/** 액션 수행 시 코인 보상 */
+export const ACTION_COIN_REWARD: Record<string, number> = {
+  feed: 3,
+  play: 0,   // 미니게임에서 별도 지급
+  clean: 4,
+  sleep: 2,
+  heal: 2,
+};
+
+/** 미니게임 점수 → 코인 변환 배율 */
+export const MINIGAME_COIN_MULTIPLIER = 10;
+
+// ============================================
+// 상점 아이템 정의
+// ============================================
+
+export const SHOP_ITEMS: ShopItemDef[] = [
+  // 간식 (배고픔 + 행복도 회복)
+  {
+    id: 'cookie',
+    name: '버터 쿠키',
+    description: '바삭하고 달콤한 쿠키. 배고픔과 기분을 살짝 채워줘요.',
+    icon: 'cookie',
+    price: 30,
+    effects: { hunger: 15, happiness: 5 },
+    category: 'snack',
+  },
+  {
+    id: 'candy',
+    name: '별사탕',
+    description: '반짝이는 별 모양 사탕! 행복도가 크게 올라요.',
+    icon: 'star',
+    price: 20,
+    effects: { happiness: 12 },
+    category: 'snack',
+  },
+  {
+    id: 'premium_meal',
+    name: '스페셜 도시락',
+    description: '정성 가득 수제 도시락. 배고픔과 건강을 크게 회복해요.',
+    icon: 'lunch_dining',
+    price: 80,
+    effects: { hunger: 35, health: 10, happiness: 5 },
+    category: 'snack',
+  },
+  {
+    id: 'milk',
+    name: '따뜻한 우유',
+    description: '포근한 우유 한 잔. 에너지와 건강이 올라가요.',
+    icon: 'local_cafe',
+    price: 40,
+    effects: { energy: 20, health: 8 },
+    category: 'snack',
+  },
+  // 장난감 (행복도 + 에너지 관련)
+  {
+    id: 'ball',
+    name: '솜사탕 공',
+    description: '푹신한 공. 놀면서 행복해지지만 에너지가 줄어요.',
+    icon: 'toys',
+    price: 50,
+    effects: { happiness: 20, energy: -8 },
+    category: 'toy',
+  },
+  {
+    id: 'pillow',
+    name: '솜사탕 쿠션',
+    description: '폭신한 쿠션에서 쉬면 에너지가 크게 회복돼요.',
+    icon: 'king_bed',
+    price: 100,
+    effects: { energy: 30, health: 5 },
+    category: 'toy',
+  },
+  // 케어 (건강 + 청결)
+  {
+    id: 'soap',
+    name: '반짝 비누',
+    description: '향기로운 비누로 깨끗하게! 청결도가 크게 올라요.',
+    icon: 'water_drop',
+    price: 35,
+    effects: { cleanliness: 25, happiness: -3 },
+    category: 'care',
+  },
+  {
+    id: 'medicine',
+    name: '비타민 젤리',
+    description: '맛있는 비타민! 건강을 크게 회복해요.',
+    icon: 'medication',
+    price: 60,
+    effects: { health: 25, happiness: 3 },
+    category: 'care',
+  },
+];

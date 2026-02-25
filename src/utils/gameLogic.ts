@@ -81,6 +81,7 @@ export function createPet(name: string, species: PetSpecies, breed: BreedId): Pe
     lastInteraction: now,
     lastTickAt: now,
     bornAt: now,
+    coins: 0,
     isAlive: true,
   };
 }

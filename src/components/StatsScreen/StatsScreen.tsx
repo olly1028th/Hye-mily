@@ -74,8 +74,8 @@ export default function StatsScreen() {
         {/* Stats Grid */}
         <div className="stats-grid">
           <div className="stats-grid-item stats-grid-pink">
-            <p className="stats-grid-value">{pet.totalExp}</p>
-            <p className="stats-grid-label">Hearts</p>
+            <p className="stats-grid-value">{pet.coins}</p>
+            <p className="stats-grid-label">Coins</p>
           </div>
           <div className="stats-grid-item stats-grid-blue">
             <p className="stats-grid-value">{pet.age}</p>

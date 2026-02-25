@@ -18,6 +18,18 @@ import CatchGame from '../MiniGame/CatchGame';
 import Collection from '../Collection/Collection';
 import './GameScreen.css';
 
+/** progress state를 갱신하고 localStorage에도 동기화 */
+function updateAndSave(
+  setter: React.Dispatch<React.SetStateAction<UserProgress>>,
+  updater: (prev: UserProgress) => UserProgress,
+) {
+  setter((prev) => {
+    const next = updater(prev);
+    saveProgress(next);
+    return next;
+  });
+}
+
 export default function GameScreen() {
   const { state, dispatch } = useGameContext();
   const { play, toggle } = useSound();
@@ -26,7 +38,17 @@ export default function GameScreen() {
   const [showEventLog, setShowEventLog] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [progress, setProgress] = useState<UserProgress>(loadProgress);
+
+  // 초기 로드 시 첫 펫 카운트 보정
+  const [progress, setProgress] = useState<UserProgress>(() => {
+    const loaded = loadProgress();
+    if (loaded.totalPetsRaised === 0) {
+      const updated = { ...loaded, totalPetsRaised: 1 };
+      saveProgress(updated);
+      return updated;
+    }
+    return loaded;
+  });
 
   // 진화 감지
   const [evolutionInfo, setEvolutionInfo] = useState<{
@@ -34,6 +56,8 @@ export default function GameScreen() {
     to: string;
   } | null>(null);
   const prevStageRef = useRef(state.pet?.stage);
+  const gameoverRecordedRef = useRef(false);
+  const gameoverPlayedRef = useRef(false);
 
   useEffect(() => {
     if (!state.pet) return;
@@ -43,47 +67,55 @@ export default function GameScreen() {
     if (prevStage && prevStage !== curStage) {
       setEvolutionInfo({ from: prevStage, to: curStage });
       play('evolution');
-      // 진화 카운트 증가
-      setProgress((prev) => {
-        const updated = { ...prev, totalEvolutions: prev.totalEvolutions + 1 };
-        saveProgress(updated);
-        return updated;
-      });
+      updateAndSave(setProgress, (prev) => ({
+        ...prev,
+        totalEvolutions: prev.totalEvolutions + 1,
+      }));
     }
     prevStageRef.current = curStage;
-  }, [state.pet?.stage, play]);
+  }, [state.pet, play]);
 
-  // 업적 체크 (주기적)
+  // 업적 체크
+  const progressRef = useRef(progress);
   useEffect(() => {
-    const newlyUnlocked = checkAchievements(progress, state.pet);
+    progressRef.current = progress;
+  }, [progress]);
+
+  useEffect(() => {
+    const cur = progressRef.current;
+    const newlyUnlocked = checkAchievements(cur, state.pet);
     if (newlyUnlocked.length > 0) {
       const updated = {
-        ...progress,
-        unlockedAchievements: [...progress.unlockedAchievements, ...newlyUnlocked],
+        ...cur,
+        unlockedAchievements: [...cur.unlockedAchievements, ...newlyUnlocked],
       };
       setProgress(updated);
       saveProgress(updated);
-      // 첫 번째 새 업적 알림
       dispatch({ type: 'ADD_EVENT', message: `업적 해금: ${newlyUnlocked[0]}!` });
       play('event');
     }
-  }, [progress.totalActionsPerformed, progress.totalEvolutions, progress.totalPetsRaised, state.pet?.age]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress.totalActionsPerformed, progress.totalEvolutions, progress.totalPetsRaised, state.pet?.age, dispatch, play]);
 
-  // 게임오버 시 도감에 기록
-  const gameoverRecordedRef = useRef(false);
+  // 게임오버 시 도감에 기록 (localStorage 동기화 only — setState 없음)
   useEffect(() => {
     if (state.view === 'gameover' && state.pet && !gameoverRecordedRef.current) {
       gameoverRecordedRef.current = true;
-      setProgress((prev) => {
-        const updated = addPetRecord(prev, state.pet!);
-        saveProgress(updated);
-        return updated;
-      });
+      const updated = addPetRecord(progressRef.current, state.pet);
+      saveProgress(updated);
+      // ref만 갱신하여 다음 렌더 시 반영 (재렌더 트리거 X)
+      progressRef.current = updated;
     }
     if (state.view !== 'gameover') {
       gameoverRecordedRef.current = false;
     }
   }, [state.view, state.pet]);
+
+  // 게임오버 → 도감 열 때 최신 progress를 state에 반영
+  const openCollectionWithLatest = useCallback(() => {
+    setProgress(progressRef.current);
+    setShowCollection(true);
+  }, []);
 
   const handleEvent = useCallback((message: string) => {
     setEventMessage(message);
@@ -95,7 +127,6 @@ export default function GameScreen() {
   useGameTick(handleEvent);
 
   // 게임오버 사운드
-  const gameoverPlayedRef = useRef(false);
   useEffect(() => {
     if (state.view === 'gameover' && !gameoverPlayedRef.current) {
       play('gameover');
@@ -111,15 +142,11 @@ export default function GameScreen() {
     setShowMiniGame(false);
     dispatch({ type: 'PERFORM_ACTION', actionType: 'play' });
     play('play');
-    setProgress((prev) => {
-      const updated = {
-        ...prev,
-        totalMiniGamesPlayed: prev.totalMiniGamesPlayed + 1,
-        totalActionsPerformed: prev.totalActionsPerformed + 1,
-      };
-      saveProgress(updated);
-      return updated;
-    });
+    updateAndSave(setProgress, (prev) => ({
+      ...prev,
+      totalMiniGamesPlayed: prev.totalMiniGamesPlayed + 1,
+      totalActionsPerformed: prev.totalActionsPerformed + 1,
+    }));
     if (score >= 5) {
       dispatch({ type: 'ADD_EVENT', message: `미니게임에서 ${score}개를 잡아 추가 보상!` });
     }
@@ -128,34 +155,23 @@ export default function GameScreen() {
   // 액션 수행 시 카운트
   const handleActionSound = useCallback((sound: string) => {
     play(sound as Parameters<typeof play>[0]);
-    setProgress((prev) => {
-      const updated = { ...prev, totalActionsPerformed: prev.totalActionsPerformed + 1 };
-      saveProgress(updated);
-      return updated;
-    });
+    updateAndSave(setProgress, (prev) => ({
+      ...prev,
+      totalActionsPerformed: prev.totalActionsPerformed + 1,
+    }));
   }, [play]);
 
-  if (!state.pet) return null;
-
-  const handleSoundToggle = () => {
+  const handleSoundToggle = useCallback(() => {
     const enabled = toggle();
     setSoundOn(enabled);
-  };
+  }, [toggle]);
 
   const handlePlayAction = useCallback(() => {
     setShowMiniGame(true);
   }, []);
 
-  // 첫 펫 기록 (START_GAME 시점)
-  useEffect(() => {
-    if (state.pet && progress.totalPetsRaised === 0) {
-      setProgress((prev) => {
-        const updated = { ...prev, totalPetsRaised: 1 };
-        saveProgress(updated);
-        return updated;
-      });
-    }
-  }, [state.pet]);
+  // === 모든 훅이 위에서 선언된 뒤 early return ===
+  if (!state.pet) return null;
 
   // 게임오버 화면
   if (state.view === 'gameover') {
@@ -175,7 +191,7 @@ export default function GameScreen() {
           </button>
           <button
             className="collection-button"
-            onClick={() => setShowCollection(true)}
+            onClick={openCollectionWithLatest}
           >
             도감 보기
           </button>
@@ -216,7 +232,7 @@ export default function GameScreen() {
       <div className="top-bar">
         <button
           className="icon-button"
-          onClick={() => setShowCollection(true)}
+          onClick={openCollectionWithLatest}
           title="도감 & 업적"
         >
           📖

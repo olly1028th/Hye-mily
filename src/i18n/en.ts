@@ -1,6 +1,6 @@
-import type { ko } from './ko';
+import type { Messages } from './ko';
 
-export const en: typeof ko = {
+export const en: Messages = {
   // Game screen
   gameOver: 'Game Over',
   gameOverMessage: ' can no longer be with you...',
@@ -79,4 +79,4 @@ export const en: typeof ko = {
   nice: 'Nice!',
   getReward: 'Get Reward',
   score: 'Score',
-} as const;
+};

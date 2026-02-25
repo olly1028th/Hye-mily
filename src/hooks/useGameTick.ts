@@ -17,9 +17,14 @@ export function useGameTick(onEvent?: (message: string) => void) {
   const petRef = useRef<Pet | null>(state.pet);
   const onEventRef = useRef(onEvent);
 
-  // 매 렌더마다 ref 갱신 (비용 없음)
-  petRef.current = state.pet;
-  onEventRef.current = onEvent;
+  // effect 안에서 ref 갱신 (렌더 중 ref 접근 방지)
+  useEffect(() => {
+    petRef.current = state.pet;
+  }, [state.pet]);
+
+  useEffect(() => {
+    onEventRef.current = onEvent;
+  }, [onEvent]);
 
   // 안정적인 tick 핸들러 — deps 없이 ref만 참조
   const tick = useCallback(() => {
@@ -52,7 +57,5 @@ export function useGameTick(onEvent?: (message: string) => void) {
     return () => {
       window.clearInterval(id);
     };
-    // interval은 view, isPaused, tickInterval 변경 시에만 재생성
-    // pet 변경 시에는 재생성하지 않음 (ref로 최신값 참조)
   }, [state.view, state.isPaused, state.tickInterval, tick, state.pet]);
 }

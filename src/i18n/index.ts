@@ -1,9 +1,9 @@
-import { ko } from './ko';
+import { ko, type MessageKeys, type Messages } from './ko';
 import { en } from './en';
 
 export type Locale = 'ko' | 'en';
 
-const messages: Record<Locale, typeof ko> = { ko, en };
+const messages: Record<Locale, Messages> = { ko, en };
 
 let currentLocale: Locale = 'ko';
 
@@ -15,6 +15,6 @@ export function getLocale(): Locale {
   return currentLocale;
 }
 
-export function t(key: keyof typeof ko): string {
+export function t(key: MessageKeys): string {
   return messages[currentLocale][key] ?? messages.ko[key] ?? key;
 }

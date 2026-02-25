@@ -77,4 +77,8 @@ export const ko = {
   nice: '좋아요!',
   getReward: '보상 받기',
   score: '점수',
-} as const;
+} satisfies Record<string, string>;
+
+/** 번역 키 타입 — 키 이름만 강제, 값은 string */
+export type MessageKeys = keyof typeof ko;
+export type Messages = Record<MessageKeys, string>;

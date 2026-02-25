@@ -1,0 +1,202 @@
+.collection-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 180;
+  animation: overlay-fade-in 0.3s ease;
+  padding: 1rem;
+}
+
+.collection-panel {
+  width: 100%;
+  max-width: 440px;
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow-y: auto;
+  animation: reveal-pop 0.3s ease;
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.collection-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #2d3436;
+}
+
+.collection-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #636e72;
+  padding: 0.3rem;
+}
+
+.collection-section {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.collection-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.empty-text {
+  color: #b2bec3;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* 도감 카드 */
+.pet-records {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pet-record-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.record-emoji {
+  font-size: 1.5rem;
+}
+
+.record-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.record-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2d3436;
+}
+
+.record-detail {
+  font-size: 0.75rem;
+  color: #636e72;
+}
+
+.record-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.record-badge.alive {
+  background: #00b894;
+  color: white;
+}
+
+.record-badge.dead {
+  background: #b2bec3;
+  color: white;
+}
+
+/* 업적 그리드 */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.achievement-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.7rem 0.5rem;
+  border-radius: 12px;
+  gap: 0.2rem;
+}
+
+.achievement-card.unlocked {
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.achievement-card.locked {
+  background: #f0f0f0;
+  opacity: 0.6;
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+}
+
+.achievement-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.achievement-desc {
+  font-size: 0.65rem;
+  color: #636e72;
+}
+
+/* 통계 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #6c5ce7;
+}
+
+.stat-desc {
+  font-size: 0.65rem;
+  color: #636e72;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes reveal-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}

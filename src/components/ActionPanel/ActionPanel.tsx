@@ -6,9 +6,11 @@ import './ActionPanel.css';
 
 interface ActionPanelProps {
   onActionSound?: (sound: string) => void;
+  /** "놀기" 버튼 클릭 시 미니게임 실행 */
+  onPlayAction?: () => void;
 }
 
-export default function ActionPanel({ onActionSound }: ActionPanelProps) {
+export default function ActionPanel({ onActionSound, onPlayAction }: ActionPanelProps) {
   const { state, dispatch } = useGameContext();
   const [cooldowns, setCooldowns] = useState<Record<string, boolean>>({});
   const [activeAction, setActiveAction] = useState<string | null>(null);
@@ -16,6 +18,12 @@ export default function ActionPanel({ onActionSound }: ActionPanelProps) {
   const handleAction = useCallback(
     (actionType: ActionType) => {
       if (cooldowns[actionType]) return;
+
+      // "놀기"는 미니게임으로 대체
+      if (actionType === 'play' && onPlayAction) {
+        onPlayAction();
+        return;
+      }
 
       dispatch({ type: 'PERFORM_ACTION', actionType });
       onActionSound?.(actionType);
@@ -31,7 +39,7 @@ export default function ActionPanel({ onActionSound }: ActionPanelProps) {
         setCooldowns((prev) => ({ ...prev, [actionType]: false }));
       }, action.cooldown);
     },
-    [cooldowns, dispatch, onActionSound]
+    [cooldowns, dispatch, onActionSound, onPlayAction]
   );
 
   if (!state.pet || !state.pet.isAlive) return null;

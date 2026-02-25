@@ -232,3 +232,40 @@ export interface SaveData {
   startedAt: number;
   savedAt: number;
 }
+
+// ============================================
+// 도감 타입
+// ============================================
+
+/** 도감에 기록되는 개별 펫 기록 */
+export interface PetRecord {
+  name: string;
+  species: PetSpecies;
+  breed: BreedId;
+  maxAge: number;
+  maxStage: GrowthStage;
+  bornAt: number;
+  diedAt: number | null;
+}
+
+// ============================================
+// 업적 타입
+// ============================================
+
+/** 업적 정의 */
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+/** 유저 전체 진행 데이터 (도감 + 업적) */
+export interface UserProgress {
+  petRecords: PetRecord[];
+  unlockedAchievements: string[];
+  totalPetsRaised: number;
+  totalActionsPerformed: number;
+  totalEvolutions: number;
+  totalMiniGamesPlayed: number;
+}
